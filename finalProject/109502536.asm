@@ -28,7 +28,7 @@ characterPosition COORD <10,10>
 main PROC
 
     INVOKE consoleChange
-  L1:
+  L1:                                       ;按鍵輸入
     mov al,0
     call ReadKey
     cmp al,'w'
@@ -70,34 +70,34 @@ main ENDP
 
 consoleChange PROC                          ;螢幕清除並畫線
   
-  INVOKE GetStdHandle, STD_OUTPUT_HANDLE ; Get the console ouput handle
+  INVOKE GetStdHandle, STD_OUTPUT_HANDLE    ; Get the console ouput handle
     mov outputHandle, eax 
-    call Clrscr
-    mov ecx,CMDHEIGHT
-    push xyPosition
-  DRAWLINE:
+    call Clrscr                             ;螢幕清除
+    mov ecx,CMDHEIGHT          
+    push xyPosition                         ;紀錄起點
+  DRAWLINE:                                 ;行數
     push ecx
-    push xyPosition.X
+    push xyPosition.X                       ;紀錄x位置
     mov ecx,CMDWIDTH
-  DRAWROW:
+  DRAWROW:                                  ;列數
     push ecx
     mov block,' '
-    INVOKE characterCheck
-    INVOKE groundCheck
-    INVOKE enemyCreate
-    INVOKE enemyMove
-    INVOKE WriteConsoleOutputCharacter,
-       outputHandle,   ; console output handle
-       ADDR block,   ; pointer to the top box line
-       1,   ; size of box line
-       xyPosition,   ; coordinates of first char
-       ADDR count    ; output count
+    INVOKE characterCheck                   ;判斷角色位置
+    INVOKE groundCheck                      ;判斷地板位置
+    INVOKE enemyCreate                      ;判斷敵人是否生成
+    INVOKE enemyMove                        ;判斷前方是否有敵人並向前移動
+    INVOKE WriteConsoleOutputCharacter,     ;輸出一格
+       outputHandle,   
+       ADDR block,   
+       1,   
+       xyPosition,   
+       ADDR count    
     pop ecx
-    inc xyPosition.X
-    LOOP DRAWROW
+    inc xyPosition.X                        
+    LOOP DRAWROW                            ;增加x座標
     pop xyPosition.X
     pop ecx
-    inc xyPosition.Y   ; 座標換到下一行位置
+    inc xyPosition.Y                        ; 座標換到下一行位置
     LOOP DRAWLINE
     pop xyPosition
     ret
@@ -105,13 +105,13 @@ consoleChange PROC                          ;螢幕清除並畫線
 
 characterCheck PROC USES eax ebx ecx             ;判斷角色位置
   
-    mov ax,characterPosition.X
+    mov ax,characterPosition.X                      
     shl eax,16
     mov ax,characterPosition.Y
     mov bx,xyPosition.X
     shl ebx,16
     mov bx,xyPosition.Y
-    cmp eax,ebx
+    cmp eax,ebx                                   ;利用eax ebx存取座標並比較,若相同則畫上0
     jne NOCHARACTER
     mov block,'0'
   NOCHARACTER:
@@ -122,7 +122,7 @@ groundCheck PROC USES eax ebx ecx                ;判斷地板位置
   
     mov ax,11
     mov bx,xyPosition.Y
-    cmp ax,bx
+    cmp ax,bx                                  ;利用ax bx存取座標並比較,若相同則畫上-   
     jne NOGROUND
     mov block,'-'
   NOGROUND:
@@ -140,7 +140,7 @@ enemyCreate PROC USES eax ebx ecx              ;判斷敵人是否生成
     mov bx,xyPosition.X
     shl ebx,16
     mov bx,xyPosition.Y
-    cmp eax,ebx
+    cmp eax,ebx                               ;利用eax ebx存取座標並比較,若相同則畫上X
     jne NOENEMY
     mov block,'X'                             
     mov esi,119                               ;用陣列存位置
