@@ -15,7 +15,7 @@ CMDHEIGHT = 30
 .data
 block BYTE ?
 
-enemyRow DWORD 120 DUP(?)
+enemyRow DWORD 120 DUP(0)
 enemy DWORD 0 
 outputHandle DWORD 0
 bytesWritten DWORD 0
@@ -38,28 +38,28 @@ main PROC
     cmp al,'d'
     je RIGHT
     jmp CHANGE
-  JUMP:
+  JUMP:                                     ;跳躍指令
     dec characterPosition.Y
     dec characterPosition.Y
     dec characterPosition.Y
     jmp CHANGE
-  LEFT:
+  LEFT:                                     ;向左指令
     dec characterPosition.X
     jmp CHANGE
-  RIGHT:
+  RIGHT:                                    ;向右指令
     inc characterPosition.X
     jmp CHANGE
-  CHANGE:
+  CHANGE:                                   ;若不在地上則下墜
     mov ax,characterPosition.Y
     cmp ax,10
     je ONGROUND
     inc characterPosition.Y
   ONGROUND:
-    mov eax,10 
+    mov eax,10                              ;產生敵人變數
     call RandomRange
     mov enemy,eax
     INVOKE consoleChange
-    mov ax,0
+    mov ax,10                               ;10ms延遲
     call DELAY
     jmp L1
 
@@ -68,7 +68,7 @@ main PROC
     exit
 main ENDP
 
-consoleChange PROC
+consoleChange PROC                          ;螢幕清除並畫線
   
   INVOKE GetStdHandle, STD_OUTPUT_HANDLE ; Get the console ouput handle
     mov outputHandle, eax 
@@ -103,7 +103,7 @@ consoleChange PROC
     ret
     consoleChange ENDP
 
-characterCheck PROC USES eax ebx
+characterCheck PROC USES eax ebx ecx             ;判斷角色位置
   
     mov ax,characterPosition.X
     shl eax,16
@@ -118,7 +118,7 @@ characterCheck PROC USES eax ebx
     ret
     characterCheck ENDP
 
-groundCheck PROC USES eax ebx
+groundCheck PROC USES eax ebx ecx                ;判斷地板位置
   
     mov ax,11
     mov bx,xyPosition.Y
@@ -129,7 +129,7 @@ groundCheck PROC USES eax ebx
     ret
     groundCheck ENDP
 
-enemyCreate PROC USES eax ebx
+enemyCreate PROC USES eax ebx ecx              ;判斷敵人是否生成
   
     mov eax,4
     cmp eax,enemy
@@ -142,14 +142,42 @@ enemyCreate PROC USES eax ebx
     mov bx,xyPosition.Y
     cmp eax,ebx
     jne NOENEMY
-    mov block,'X'
+    mov block,'X'                             
+    mov esi,119                               ;用陣列存位置
+    mov [enemyRow+esi],1
   NOENEMY:
     ret
     enemyCreate ENDP
 
-enemyMove PROC USES eax ebx
+enemyMove PROC USES eax ebx ecx
   
-    
+    mov esi,0
+    mov ecx,119
+  ENEMYLEFT:
+    mov eax,[enemyRow+esi]
+    mov [enemyRow+esi+1],eax
+    LOOP ENEMYLEFT
+    mov ecx,118
+    mov esi,0
+    mov eax,0
+  CHECKENEMY:
+    push eax
+    cmp [enemyRow+esi],1
+    jne DONOTHING
+    shl eax,16
+    mov ax,10
+    mov bx,xyPosition.X
+    shl ebx,16
+    mov bx,xyPosition.Y
+    cmp eax,ebx
+    jne DONOTHING
+    mov block,'X'                             
+  DONOTHING:
+    pop eax
+    inc eax
+    inc esi
+    LOOP CHECKENEMY
+  NOENEMY:
     ret
     enemyMove ENDP
 
