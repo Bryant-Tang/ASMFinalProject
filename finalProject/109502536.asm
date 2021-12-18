@@ -5,6 +5,7 @@ consoleChange PROTO                         ;螢幕清除並畫線
 characterCheck PROTO                        ;判斷角色位置
 groundCheck PROTO                           ;判斷地板位置
 enemyCreate PROTO                           ;判斷敵人是否生成
+enemyDraw PROTO                             ;判斷是否畫出敵人
 enemyMove PROTO                             ;判斷前方是否有敵人並向前移動
 gameOver PROTO                              ;判斷是否撞上敵人
 
@@ -15,7 +16,7 @@ CMDHEIGHT = 30
 .data
 block BYTE ?
 
-enemyRow DWORD 120 DUP(0)
+enemyRow BYTE 120 DUP(0)
 enemy DWORD 0 
 outputHandle DWORD 0
 bytesWritten DWORD 0
@@ -55,12 +56,12 @@ main PROC
     je ONGROUND
     inc characterPosition.Y
   ONGROUND:
-    mov eax,10                              ;產生敵人變數
+    mov eax,1000                            ;產生敵人變數
     call RandomRange
     mov enemy,eax
     INVOKE consoleChange
-    mov ax,10                               ;10ms延遲
-    call DELAY
+    mov eax,100                             ;10ms延遲
+    call Delay
     jmp L1
 
     call WaitMsg
@@ -75,6 +76,8 @@ consoleChange PROC                          ;螢幕清除並畫線
     call Clrscr                             ;螢幕清除
     mov ecx,CMDHEIGHT          
     push xyPosition                         ;紀錄起點
+  INVOKE enemyMove                          ;判斷是否有舊的敵人並向前移動
+  INVOKE enemyCreate                        ;判斷敵人生成
   DRAWLINE:                                 ;行數
     push ecx
     push xyPosition.X                       ;紀錄x位置
@@ -84,8 +87,7 @@ consoleChange PROC                          ;螢幕清除並畫線
     mov block,' '
     INVOKE characterCheck                   ;判斷角色位置
     INVOKE groundCheck                      ;判斷地板位置
-    INVOKE enemyCreate                      ;判斷敵人是否生成
-    INVOKE enemyMove                        ;判斷前方是否有敵人並向前移動
+    INVOKE enemyDraw                        ;判斷畫出敵人
     INVOKE WriteConsoleOutputCharacter,     ;輸出一格
        outputHandle,   
        ADDR block,   
@@ -97,13 +99,13 @@ consoleChange PROC                          ;螢幕清除並畫線
     LOOP DRAWROW                            ;增加x座標
     pop xyPosition.X
     pop ecx
-    inc xyPosition.Y                        ; 座標換到下一行位置
+    inc xyPosition.Y                        ;座標換到下一行位置
     LOOP DRAWLINE
     pop xyPosition
     ret
     consoleChange ENDP
 
-characterCheck PROC USES eax ebx ecx             ;判斷角色位置
+characterCheck PROC USES eax ebx ecx        ;判斷角色位置
   
     mov ax,characterPosition.X                      
     shl eax,16
@@ -111,74 +113,57 @@ characterCheck PROC USES eax ebx ecx             ;判斷角色位置
     mov bx,xyPosition.X
     shl ebx,16
     mov bx,xyPosition.Y
-    cmp eax,ebx                                   ;利用eax ebx存取座標並比較,若相同則畫上0
+    cmp eax,ebx                             ;利用eax ebx存取座標並比較,若相同則畫上0
     jne NOCHARACTER
     mov block,'0'
   NOCHARACTER:
     ret
     characterCheck ENDP
 
-groundCheck PROC USES eax ebx ecx                ;判斷地板位置
+groundCheck PROC USES eax ebx ecx           ;判斷地板位置
   
     mov ax,11
     mov bx,xyPosition.Y
-    cmp ax,bx                                  ;利用ax bx存取座標並比較,若相同則畫上-   
+    cmp ax,bx                               ;利用ax bx存取座標並比較,若相同則畫上-   
     jne NOGROUND
     mov block,'-'
   NOGROUND:
     ret
     groundCheck ENDP
 
-enemyCreate PROC USES eax ebx ecx              ;判斷敵人是否生成
-  
-    mov eax,4
+enemyCreate PROC USES eax esi               ;判斷敵人是否生成
+    mov eax,50                              ;50/1000的機率生成敵人
     cmp eax,enemy
-    jb NOENEMY
-    mov ax,119
-    shl eax,16
-    mov ax,10
-    mov bx,xyPosition.X
-    shl ebx,16
-    mov bx,xyPosition.Y
-    cmp eax,ebx                               ;利用eax ebx存取座標並比較,若相同則畫上X
-    jne NOENEMY
-    mov block,'X'                             
-    mov esi,119                               ;用陣列存位置
+    jb NONEWENEMY
+    mov esi,119                             ;用陣列存位置
     mov [enemyRow+esi],1
-  NOENEMY:
+  NONEWENEMY:
     ret
     enemyCreate ENDP
 
-enemyMove PROC USES eax ebx ecx
-  
-    mov esi,0
-    mov ecx,119
-  ENEMYLEFT:
-    mov eax,[enemyRow+esi]
-    mov [enemyRow+esi+1],eax
-    LOOP ENEMYLEFT
-    mov ecx,118
-    mov esi,0
-    mov eax,0
-  CHECKENEMY:
-    push eax
+enemyDraw PROC USES eax ebx ecx esi         ;判斷是否畫出敵人
+    movzx esi,xyPosition.X                  ;如果當前X座標對應到敵人陣列中不是1就不畫
     cmp [enemyRow+esi],1
-    jne DONOTHING
-    shl eax,16
-    mov ax,10
-    mov bx,xyPosition.X
-    shl ebx,16
+    jne NOENEMY
+    mov ax,10                               ;如果當前Y座標不是地板上就不畫
     mov bx,xyPosition.Y
-    cmp eax,ebx
-    jne DONOTHING
-    mov block,'X'                             
-  DONOTHING:
-    pop eax
-    inc eax
-    inc esi
-    LOOP CHECKENEMY
+    cmp ax,bx
+    jne NOENEMY
+    mov block,'X'
   NOENEMY:
     ret
-    enemyMove ENDP
+    enemyDraw ENDP
 
+enemyMove PROC USES eax ecx esi             ;每一次清除版面重畫就判斷敵人移動
+    mov esi,0
+    mov ecx,119
+  ENEMYLEFT:                                ;敵人陣列全部往前複製
+    mov al,[enemyRow+esi+1]
+    mov [enemyRow+esi],al
+    inc esi
+    LOOP ENEMYLEFT
+    mov esi,119                             ;敵人陣列最後一個補0
+    mov [enemyRow+esi],0
+    ret
+    enemyMove ENDP
 END main
