@@ -69,7 +69,7 @@ main PROC
     call RandomRange
     mov enemy,eax
     INVOKE consoleChange
-    mov eax,100                             ;10ms延遲
+    mov eax,1                               ;1ms延遲
     call Delay
     jmp L1
 
