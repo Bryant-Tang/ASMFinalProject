@@ -8,6 +8,8 @@ enemyCreate PROTO                           ;判斷敵人是否生成
 enemyDraw PROTO                             ;判斷是否畫出敵人
 enemyMove PROTO                             ;判斷前方是否有敵人並向前移動
 gameOver PROTO                              ;判斷是否撞上敵人
+endingScreen PROTO                          ;結束頁面
+beginScreen PROTO                           ;開始頁面
 
 main	EQU start@0
 CMDWIDTH = 120
@@ -16,6 +18,8 @@ CMDHEIGHT = 30
 .data
 block BYTE ?
 
+enemyProbability DWORD 10000
+delayTime DWORD 50
 enemyRow BYTE 120 DUP(0)
 enemy DWORD 0 
 outputHandle DWORD 0
@@ -29,6 +33,7 @@ jumping BYTE 0
 main PROC
 
     INVOKE consoleChange
+    mov ebx,0
   L1:                                       ;按鍵輸入
     mov al,0
     call ReadKey
@@ -65,12 +70,13 @@ main PROC
   JUMPINGDOWN:                              ;跳躍過程結束歸零
     mov jumping,0
   ONGROUND:
-    mov eax,1000                            ;產生敵人變數
+    mov eax,1000000                            ;產生敵人變數
     call RandomRange
     mov enemy,eax
     INVOKE consoleChange
-    mov eax,1                               ;1ms延遲
+    mov eax,delayTime                           ;延遲
     call Delay
+    inc ebx
     jmp L1
 
     call WaitMsg
@@ -78,13 +84,14 @@ main PROC
     exit
 main ENDP
 
-consoleChange PROC                          ;螢幕清除並畫線
+consoleChange PROC                          ;畫出遊戲畫面
   
   INVOKE GetStdHandle, STD_OUTPUT_HANDLE    ; Get the console ouput handle
     mov outputHandle, eax
     mov ecx,CMDHEIGHT          
     push xyPosition                         ;紀錄起點
   INVOKE enemyMove                          ;判斷是否有舊的敵人並向前移動
+  INVOKE gameOver                         ;判斷是否撞上敵人
   INVOKE enemyCreate                        ;判斷敵人生成
   DRAWLINE:                                 ;行數
     push ecx
@@ -139,8 +146,11 @@ groundCheck PROC USES eax ebx ecx           ;判斷地板位置
     ret
     groundCheck ENDP
 
-enemyCreate PROC USES eax esi               ;判斷敵人是否生成
-    mov eax,50                              ;50/1000的機率生成敵人
+enemyCreate PROC USES eax ebx esi               ;判斷敵人是否生成
+    mov ebx,enemyProbability                    ;增加機率
+    inc ebx
+    mov enemyProbability,ebx
+    mov eax,enemyProbability                    ;機率生成敵人
     cmp eax,enemy
     jb NONEWENEMY
     mov esi,119                             ;用陣列存位置
@@ -174,4 +184,18 @@ enemyMove PROC USES eax ecx esi             ;每一次清除版面重畫就判�
     mov [enemyRow+esi],0
     ret
     enemyMove ENDP
+
+gameOver PROC USES eax ebx ecx esi             ;判斷遊戲結束
+    movzx esi,xyPosition.X                    ;如果當前X座標對應到敵人陣列中不是1就沒事
+    cmp [enemyRow+esi],1
+    jne GAMECONTINUE
+    mov ax,10                               ;如果當前Y座標不是地板上就沒事
+    mov bx,characterPosition.Y
+    cmp ax,bx
+    jne GAMECONTINUE
+    call Clrscr
+    call WaitMsg
+  GAMECONTINUE:
+    ret
+    gameOver ENDP
 END main
