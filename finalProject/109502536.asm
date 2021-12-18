@@ -23,7 +23,7 @@ bytesWritten DWORD 0
 count DWORD 0
 xyPosition COORD <0,0>
 characterPosition COORD <10,10> 
-          
+jumping BYTE 0
  
 .code
 main PROC
@@ -40,8 +40,7 @@ main PROC
     je RIGHT
     jmp CHANGE
   JUMP:                                     ;跳躍指令
-    dec characterPosition.Y
-    dec characterPosition.Y
+    inc jumping                             ;開始跳躍過程
     dec characterPosition.Y
     jmp CHANGE
   LEFT:                                     ;向左指令
@@ -55,6 +54,16 @@ main PROC
     cmp ax,10
     je ONGROUND
     inc characterPosition.Y
+    cmp jumping,0                           ;判斷是否在跳躍過程
+    je ONGROUND
+    cmp jumping,5                           ;跳躍過程1到5每次向上1格
+    ja JUMPINGDOWN
+    dec characterPosition.Y
+    dec characterPosition.Y
+    inc jumping
+    jmp ONGROUND
+  JUMPINGDOWN:                              ;跳躍過程結束歸零
+    mov jumping,0
   ONGROUND:
     mov eax,1000                            ;產生敵人變數
     call RandomRange
@@ -72,8 +81,7 @@ main ENDP
 consoleChange PROC                          ;螢幕清除並畫線
   
   INVOKE GetStdHandle, STD_OUTPUT_HANDLE    ; Get the console ouput handle
-    mov outputHandle, eax 
-    call Clrscr                             ;螢幕清除
+    mov outputHandle, eax
     mov ecx,CMDHEIGHT          
     push xyPosition                         ;紀錄起點
   INVOKE enemyMove                          ;判斷是否有舊的敵人並向前移動
