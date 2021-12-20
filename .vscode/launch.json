@@ -1,0 +1,12 @@
+{
+    "version": "2.0.0",
+    "configurations": [
+        {
+        "name": "(asm) Launch",
+        "request": "launch",
+        "command": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+        "preLaunchTask": "Compile",
+        "type": "node-terminal",
+        "internalConsoleOptions": "neverOpen"
+    }]
+}
