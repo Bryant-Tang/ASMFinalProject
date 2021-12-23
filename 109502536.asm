@@ -36,10 +36,12 @@ characterPosition COORD <10,10>
 jumping BYTE 0
 gameovercheck BYTE 0
 score DWORD 0
+beginFile BYTE "START.txt",0
+pauseFile BYTE "PAUSE.txt",0
+endingFile BYTE "OVER.txt",0
  
 .code
 main PROC
-
   INVOKE GetStdHandle, STD_OUTPUT_HANDLE    ; Get the console ouput handle
     mov outputHandle, eax
   INVOKE GetStdHandle, STD_INPUT_HANDLE    ; Get the console ouput handle
@@ -51,11 +53,11 @@ main PROC
   L1:                                       ;按鍵輸入
     mov ax,0
     call ReadKey
-    .IF ax==1177h&&characterPosition.Y==10
-      inc jumping                             ;開始跳躍過程
+    .IF al==20h&&characterPosition.Y==10
+      inc jumping                           ;開始跳躍過程
       dec characterPosition.Y
     .ENDIF 
-    .IF ax==011Bh                           ;暫停遊戲
+    .IF al==1Bh                             ;暫停遊戲
         INVOKE pauseScreen
     .ENDIF                                 
     .IF characterPosition.Y<10              ;若不在地上則下墜
@@ -100,8 +102,6 @@ main PROC
     jmp L1
   L2:
     INVOKE endingScreen
-    call WaitMsg
-    call Clrscr
     exit
 main ENDP
 
@@ -209,21 +209,50 @@ gameOver PROC USES eax ebx ecx esi             ;判斷遊戲結束
     ret
     gameOver ENDP
 
-beginScreen PROC USES eax ebx ecx esi             ;開始畫面
-    
+beginScreen PROC USES eax ecx edx              ;開始畫面
+    LOCAL fileHandle:HANDLE,buffer[3600]:BYTE
+    mov	edx,OFFSET beginFile                   ;開啟檔案
+	  call OpenInputFile
+	  mov	fileHandle,eax                         ;讀檔案到buffer裡
+    lea	edx,[buffer]
+	  mov	ecx,3599
+	  call ReadFromFile
+    call Clrscr                                ;清空螢幕
+    lea	edx,[buffer]                           ;印出buffer
+	  call WriteString
+    call ReadChar
     ret
     beginScreen ENDP
 
-pauseScreen PROC USES eax ebx ecx esi             ;暫停畫面
+pauseScreen PROC USES eax ecx edx              ;暫停畫面
+    LOCAL fileHandle:HANDLE,buffer[3600]:BYTE
+    mov	edx,OFFSET pauseFile
+	  call OpenInputFile
+	  mov	fileHandle,eax
+    lea	edx,[buffer]
+	  mov	ecx,3599
+	  call ReadFromFile
     call Clrscr
-    call WaitMsg
-    call Clrscr
+    lea	edx,[buffer]
+	  call WriteString
+    call ReadChar
     INVOKE consoleChange
     ret
     pauseScreen ENDP
 
-endingScreen PROC USES eax ebx ecx esi             ;結束畫面
+endingScreen PROC USES eax ecx edx              ;結束畫面
+    LOCAL fileHandle:HANDLE,buffer[3600]:BYTE
+    mov	edx,OFFSET endingFile
+	  call OpenInputFile
+	  mov	fileHandle,eax
+    lea	edx,[buffer]
+	  mov	ecx,3599
+	  call ReadFromFile
     call Clrscr
+    lea	edx,[buffer]
+	  call WriteString
+    call ReadChar
     ret
     endingScreen ENDP
+
 END main
