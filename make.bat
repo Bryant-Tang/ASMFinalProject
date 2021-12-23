@@ -43,5 +43,5 @@ REM Display all files related to this program:
 DIR 109502536.*
 
 :terminate
-
+PAUSE
 endlocal

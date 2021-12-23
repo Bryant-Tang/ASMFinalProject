@@ -21,10 +21,14 @@ CMDHEIGHT = 30
 block BYTE ?
 enemyProbability DWORD 10000
 delayTime DWORD 150
+begintext BYTE 10000 DUP(?)
+pausetext BYTE 10000 DUP(?)
+endingtext BYTE 10000 DUP(?)
 enemyRow BYTE 120 DUP(0)
 enemyHeight BYTE 1 
 enemy DWORD 0 
 outputHandle DWORD 0
+inputHandle DWORD 0
 bytesWritten DWORD 0
 count DWORD 0
 xyPosition COORD <0,0>
@@ -36,6 +40,10 @@ score DWORD 0
 .code
 main PROC
 
+  INVOKE GetStdHandle, STD_OUTPUT_HANDLE    ; Get the console ouput handle
+    mov outputHandle, eax
+  INVOKE GetStdHandle, STD_INPUT_HANDLE    ; Get the console ouput handle
+    mov inputHandle, eax
     INVOKE beginScreen
     call Clrscr
     INVOKE consoleChange
@@ -99,8 +107,6 @@ main ENDP
 
 consoleChange PROC                          ;畫出遊戲畫面
   
-  INVOKE GetStdHandle, STD_OUTPUT_HANDLE    ; Get the console ouput handle
-    mov outputHandle, eax
     mov ecx,CMDHEIGHT          
     push xyPosition                         ;紀錄起點
   DRAWLINE:                                 ;行數
