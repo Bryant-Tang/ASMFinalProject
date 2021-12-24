@@ -34,6 +34,8 @@ count DWORD 0
 xyPosition COORD <0,0>
 characterPosition COORD <10,10> 
 cursorPosition COORD <50,0>
+smallRect SMALL_RECT <0,0,120,30> 
+consoleScreen COORD <120,30>
 jumping BYTE 0
 gameovercheck BYTE 0
 score DWORD 0
@@ -48,6 +50,13 @@ main PROC
     mov outputHandle, eax
   INVOKE GetStdHandle, STD_INPUT_HANDLE    ; Get the console ouput handle
     mov inputHandle, eax
+    INVOKE SetConsoleWindowInfo,          ;設定console範圍
+      outputHandle,
+      TRUE,
+      ADDR smallRect
+    INVOKE SetConsoleScreenBufferSize,      ;設定緩衝區大小
+      outputHandle,
+      consoleScreen
     INVOKE beginScreen
     call Clrscr
     INVOKE consoleChange
