@@ -33,9 +33,11 @@ bytesWritten DWORD 0
 count DWORD 0
 xyPosition COORD <0,0>
 characterPosition COORD <10,10> 
+cursorPosition COORD <50,0>
 jumping BYTE 0
 gameovercheck BYTE 0
 score DWORD 0
+scoreString BYTE "your score:" , 0
 beginFile BYTE "START.txt",0
 pauseFile BYTE "PAUSE.txt",0
 endingFile BYTE "OVER.txt",0
@@ -99,6 +101,13 @@ main PROC
       jmp L2
     .ENDIF
     inc score
+    INVOKE SetConsoleCursorPosition,            ;讓游標位置固定，顯示分數
+        outputHandle,
+        cursorPosition
+    mov edx,OFFSET scoreString
+    call WriteString
+    mov eax,score
+    call WriteInt
     jmp L1
   L2:
     INVOKE endingScreen
@@ -225,7 +234,7 @@ beginScreen PROC USES eax ecx edx              ;開始畫面
     beginScreen ENDP
 
 pauseScreen PROC USES eax ecx edx              ;暫停畫面
-    LOCAL fileHandle:HANDLE,buffer[3600]:BYTE
+    LOCAL fileHandle:HANDLE,buffer[4200]:BYTE 
     mov	edx,OFFSET pauseFile
 	  call OpenInputFile
 	  mov	fileHandle,eax
