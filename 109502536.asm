@@ -27,7 +27,8 @@ begintext BYTE 10000 DUP(?)
 pausetext BYTE 10000 DUP(?)
 endingtext BYTE 10000 DUP(?)
 enemyRow BYTE 120 DUP(0)
-enemyHeight WORD ?
+enemyHeight WORD 120 DUP(0)
+height DWORD 0 
 onGround WORD 20
 ground WORD 21
 enemy DWORD 0 
@@ -99,7 +100,7 @@ RESET:
     mov eax,2                                 ;產生敵人高度變數
     call RandomRange
     inc eax
-    mov enemyHeight,ax
+    mov height,eax
     INVOKE enemyMove                          ;判斷是否有舊的敵人並向前移動
     INVOKE gameOver                           ;判斷是否撞上敵人
     INVOKE enemyCreate                        ;判斷敵人生成
@@ -225,6 +226,11 @@ enemyCreate PROC USES eax ebx esi               ;判斷敵人是否生成
       mov esi,119                             ;用陣列存位置
       mov [enemyRow+esi],1
     .ENDIF
+    .IF
+      mov esi,119                             ;用陣列存高度
+      mov eax,height
+      mov [enemyHeight+esi],ax
+    .ENDIF
     ret
     enemyCreate ENDP
 
@@ -232,7 +238,7 @@ enemyDraw PROC USES eax ebx ecx esi         ;判斷是否畫出敵人
     movzx esi,xyPosition.X                  ;如果當前X座標對應到敵人陣列中不是1就不畫
     .IF [enemyRow+esi]==1
       mov ax,ground                               ;如果當前Y座標不是地板上就不畫
-      sub ax,enemyHeight
+      sub ax,[enemyHeight+esi]
       mov bx,xyPosition.Y
       .IF ax<=bx && bx<=onGround
         mov block,'X'
@@ -247,10 +253,13 @@ enemyMove PROC USES eax ecx esi             ;每一次清除版面重畫就判�
   ENEMYLEFT:                                ;敵人陣列全部往前複製
     mov al,[enemyRow+esi+1]
     mov [enemyRow+esi],al
+    mov ax,[enemyHeight+esi+1]
+    mov [enemyHeight+esi],ax
     inc esi
     LOOP ENEMYLEFT
     mov esi,119                             ;敵人陣列最後一個補0
     mov [enemyRow+esi],0
+    mov [enemyHeight+esi],0
     ret
     enemyMove ENDP
 
@@ -258,7 +267,7 @@ gameOver PROC USES eax ebx ecx esi             ;判斷遊戲結束
     movzx esi,characterPosition.X              ;如果當前X座標對應到敵人陣列中不是1就沒事
     .IF [enemyRow+esi]==1
       mov ax,ground                               ;如果當前Y座標不是地板上就沒事
-      sub ax,enemyHeight
+      sub ax,[enemyHeight+esi]
       mov bx,characterPosition.Y
       .IF ax<=bx && bx<=onGround
         mov gameovercheck,1
