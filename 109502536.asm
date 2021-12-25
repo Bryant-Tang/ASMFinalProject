@@ -228,12 +228,12 @@ gameOver PROC USES eax ebx ecx esi             ;判斷遊戲結束
     gameOver ENDP
 
 beginScreen PROC USES eax ecx edx              ;開始畫面
-    LOCAL fileHandle:HANDLE,buffer[3600]:BYTE
+    LOCAL fileHandle:HANDLE,buffer[5000]:BYTE
     mov	edx,OFFSET beginFile                   ;開啟檔案
 	  call OpenInputFile
 	  mov	fileHandle,eax                         ;讀檔案到buffer裡
     lea	edx,[buffer]
-	  mov	ecx,3599
+	  mov	ecx,3659
 	  call ReadFromFile
     call Clrscr                                ;清空螢幕
     lea	edx,[buffer]                           ;印出buffer
@@ -243,12 +243,12 @@ beginScreen PROC USES eax ecx edx              ;開始畫面
     beginScreen ENDP
 
 pauseScreen PROC USES eax ecx edx              ;暫停畫面
-    LOCAL fileHandle:HANDLE,buffer[4200]:BYTE 
+    LOCAL fileHandle:HANDLE,buffer[5000]:BYTE 
     mov	edx,OFFSET pauseFile
 	  call OpenInputFile
 	  mov	fileHandle,eax
     lea	edx,[buffer]
-	  mov	ecx,3599
+	  mov	ecx,3659
 	  call ReadFromFile
     call Clrscr
     lea	edx,[buffer]
@@ -259,12 +259,12 @@ pauseScreen PROC USES eax ecx edx              ;暫停畫面
     pauseScreen ENDP
 
 endingScreen PROC USES eax ecx edx              ;結束畫面
-    LOCAL fileHandle:HANDLE,buffer[3600]:BYTE
+    LOCAL fileHandle:HANDLE,buffer[5000]:BYTE
     mov	edx,OFFSET endingFile
 	  call OpenInputFile
 	  mov	fileHandle,eax
     lea	edx,[buffer]
-	  mov	ecx,3599
+	  mov	ecx,3659
 	  call ReadFromFile
     call Clrscr
     lea	edx,[buffer]
