@@ -226,7 +226,7 @@ enemyCreate PROC USES eax ebx esi               ;判斷敵人是否生成
       mov esi,119                             ;用陣列存位置
       mov [enemyRow+esi],1
     .ENDIF
-    .IF
+    .IF eax>enemy
       mov esi,119                             ;用陣列存高度
       mov eax,height
       mov [enemyHeight+esi],ax
