@@ -97,7 +97,7 @@ RESET:
     mov eax,1000000                            ;產生敵人變數
     call RandomRange
     mov enemy,eax
-    mov eax,2                                 ;產生敵人高度變數
+    mov eax,3                                 ;產生敵人高度變數
     call RandomRange
     inc eax
     mov height,eax
@@ -145,6 +145,7 @@ initialization PROC USES eax ebx ecx esi        ;初始化
     mov esi,0
   INITIAL:
     mov [enemyRow+esi],0
+    mov [enemyHeight+esi],0
     inc esi
     LOOP INITIAL
     mov xyPosition.x,0
