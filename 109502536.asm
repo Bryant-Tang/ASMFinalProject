@@ -12,6 +12,7 @@ scoreConsole PROTO                          ;顯示分數
 endingScreen PROTO                          ;結束頁面
 beginScreen PROTO                           ;開始頁面
 pauseScreen PROTO                           ;暫停頁面
+initialization PROTO                        ;初始化
 
 main	EQU start@0
 CMDWIDTH = 120
@@ -19,21 +20,24 @@ CMDHEIGHT = 30
 
 .data
 block BYTE ?
+restart BYTE ?
 enemyProbability DWORD 10000
-delayTime DWORD 150
+delayTime DWORD 50
 begintext BYTE 10000 DUP(?)
 pausetext BYTE 10000 DUP(?)
 endingtext BYTE 10000 DUP(?)
 enemyRow BYTE 120 DUP(0)
-enemyHeight BYTE 1 
+enemyHeight WORD ?
+onGround WORD 20
+ground WORD 21
 enemy DWORD 0 
 outputHandle DWORD 0
 inputHandle DWORD 0
-bytesWritten DWORD 0
 count DWORD 0
-xyPosition COORD <0,0>
-characterPosition COORD <10,10> 
-cursorPosition COORD <50,0>
+xyPosition COORD <0,12>
+characterPosition COORD <10,20> 
+scoreStringPosition COORD <102,0>
+scorePosition COORD <113,0>
 smallRect SMALL_RECT <0,0,120,30> 
 consoleScreen COORD <120,30>
 jumping BYTE 0
@@ -46,6 +50,8 @@ endingFile BYTE "OVER.txt",0
  
 .code
 main PROC
+RESET:
+  INVOKE initialization
   INVOKE GetStdHandle, STD_OUTPUT_HANDLE    ; Get the console ouput handle
     mov outputHandle, eax
   INVOKE GetStdHandle, STD_INPUT_HANDLE    ; Get the console ouput handle
@@ -64,16 +70,18 @@ main PROC
   L1:                                       ;按鍵輸入
     mov ax,0
     call ReadKey
-    .IF al==20h&&characterPosition.Y==10
+    mov bx,onGround
+    .IF al==20h && characterPosition.Y==bx
       inc jumping                           ;開始跳躍過程
       dec characterPosition.Y
     .ENDIF 
     .IF al==1Bh                             ;暫停遊戲
         INVOKE pauseScreen
-    .ENDIF                                 
-    .IF characterPosition.Y<10              ;若不在地上則下墜
+    .ENDIF
+    mov bx,onGround                                 
+    .IF characterPosition.Y<bx              ;若不在地上則下墜
       .IF jumping!=0                        ;判斷是否在跳躍過程
-        .IF jumping<=5                      ;跳躍過程1到5每次向上1格
+        .IF jumping<=7                      ;跳躍過程1到7每次向上1格
           inc jumping
           dec characterPosition.Y
         .ENDIF
@@ -88,6 +96,10 @@ main PROC
     mov eax,1000000                            ;產生敵人變數
     call RandomRange
     mov enemy,eax
+    mov eax,2                                 ;產生敵人高度變數
+    call RandomRange
+    inc eax
+    mov enemyHeight,ax
     INVOKE enemyMove                          ;判斷是否有舊的敵人並向前移動
     INVOKE gameOver                           ;判斷是否撞上敵人
     INVOKE enemyCreate                        ;判斷敵人生成
@@ -99,10 +111,11 @@ main PROC
       jmp DelayEDIT
     .ENDIF
     .IF eax<delayTime
-      sub delayTime,eax
+      mov ebx,delayTime
+      sub ebx,eax
     .ENDIF
   DelayEDIT:
-    mov eax,delayTime                           ;延遲
+    mov eax,ebx                           ;延遲
     call Delay
     INVOKE consoleChange
     inc ebx
@@ -112,20 +125,40 @@ main PROC
     inc score
     INVOKE SetConsoleCursorPosition,            ;讓游標位置固定，顯示分數
         outputHandle,
-        cursorPosition
-    mov edx,OFFSET scoreString
-    call WriteString
+        scorePosition
     mov eax,score
     call WriteInt
     jmp L1
   L2:
     INVOKE endingScreen
+    .IF restart==1
+      jmp RESET
+    .ENDIF
     exit
 main ENDP
 
+initialization PROC USES eax ebx ecx esi        ;初始化
+    mov enemyProbability,10000
+    mov delayTime,50
+    mov ecx,120
+    mov esi,0
+  INITIAL:
+    mov [enemyRow+esi],0
+    inc esi
+    LOOP INITIAL
+    mov xyPosition.x,0
+    mov xyPosition.y,12
+    mov characterPosition.x,10
+    mov characterPosition.y,20
+    mov jumping,0
+    mov gameovercheck,0
+    mov score,0
+    ret
+    initialization ENDP
+
 consoleChange PROC                          ;畫出遊戲畫面
   
-    mov ecx,CMDHEIGHT          
+    mov ecx,10          
     push xyPosition                         ;紀錄起點
   DRAWLINE:                                 ;行數
     push ecx
@@ -151,6 +184,11 @@ consoleChange PROC                          ;畫出遊戲畫面
     inc xyPosition.Y                        ;座標換到下一行位置
     LOOP DRAWLINE
     pop xyPosition
+    INVOKE SetConsoleCursorPosition,            ;讓游標位置固定，顯示分數字串
+        outputHandle,
+        scoreStringPosition
+    mov edx,OFFSET scoreString
+    call WriteString
     ret
     consoleChange ENDP
 
@@ -170,7 +208,7 @@ characterCheck PROC USES eax ebx ecx        ;判斷角色位置
 
 groundCheck PROC USES eax ebx ecx           ;判斷地板位置
   
-    mov ax,11
+    mov ax,ground
     mov bx,xyPosition.Y
     .IF ax==bx                               ;利用ax bx存取座標並比較,若相同則畫上-   
       mov block,'-'
@@ -193,9 +231,10 @@ enemyCreate PROC USES eax ebx esi               ;判斷敵人是否生成
 enemyDraw PROC USES eax ebx ecx esi         ;判斷是否畫出敵人
     movzx esi,xyPosition.X                  ;如果當前X座標對應到敵人陣列中不是1就不畫
     .IF [enemyRow+esi]==1
-      mov ax,10                               ;如果當前Y座標不是地板上就不畫
+      mov ax,ground                               ;如果當前Y座標不是地板上就不畫
+      sub ax,enemyHeight
       mov bx,xyPosition.Y
-      .IF ax==bx
+      .IF ax<=bx && bx<=onGround
         mov block,'X'
       .ENDIF
     .ENDIF
@@ -218,9 +257,10 @@ enemyMove PROC USES eax ecx esi             ;每一次清除版面重畫就判�
 gameOver PROC USES eax ebx ecx esi             ;判斷遊戲結束
     movzx esi,characterPosition.X              ;如果當前X座標對應到敵人陣列中不是1就沒事
     .IF [enemyRow+esi]==1
-      mov ax,10                               ;如果當前Y座標不是地板上就沒事
+      mov ax,ground                               ;如果當前Y座標不是地板上就沒事
+      sub ax,enemyHeight
       mov bx,characterPosition.Y
-      .IF ax==bx
+      .IF ax<=bx && bx<=onGround
         mov gameovercheck,1
       .ENDIF
     .ENDIF
@@ -254,6 +294,8 @@ pauseScreen PROC USES eax ecx edx              ;暫停畫面
     lea	edx,[buffer]
 	  call WriteString
     call ReadChar
+    mov edx,OFFSET scoreString
+    call WriteString
     INVOKE consoleChange
     ret
     pauseScreen ENDP
@@ -270,6 +312,12 @@ endingScreen PROC USES eax ecx edx              ;結束畫面
     lea	edx,[buffer]
 	  call WriteString
     call ReadChar
+    .IF al==20h
+      mov restart,1
+    .ENDIF
+    .IF al!=20h
+      mov restart,0
+    .ENDIF
     ret
     endingScreen ENDP
 
