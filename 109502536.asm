@@ -25,6 +25,7 @@ endingScreen PROTO                          ;結束頁面
 beginScreen PROTO                           ;開始頁面
 pauseScreen PROTO                           ;暫停頁面
 initialization PROTO                        ;初始化
+;rank PROTO                                  ;判斷排名
 
 main	EQU start@0
 CMDWIDTH = 120
@@ -65,6 +66,7 @@ xyPosition COORD <0,12>
 characterPosition COORD <10,20> 
 scoreStringPosition COORD <102,0>
 scorePosition COORD <113,0>
+middlePosition  COORD <50,15>
 smallRect SMALL_RECT <0,0,120,30> 
 consoleScreen COORD <120,30>
 jumping BYTE 0
@@ -579,6 +581,16 @@ pauseScreen PROC USES eax ecx edx              ;暫停畫面
 
 endingScreen PROC USES eax ecx edx              ;結束畫面
     LOCAL fileHandle:HANDLE,buffer[5000]:BYTE
+    ; INVOKE rank
+    call Clrscr
+    INVOKE SetConsoleCursorPosition,            ;讓游標位置固定，顯示分數
+      outputHandle,
+      middlePosition
+    mov edx,OFFSET scoreString
+    call WriteString
+    mov eax,score
+    call WriteDec
+    INVOKE Sleep,5000
     mov	edx,OFFSET endingFile
 	  call OpenInputFile
 	  mov	fileHandle,eax
@@ -599,5 +611,77 @@ endingScreen PROC USES eax ecx edx              ;結束畫面
     .ENDIF
     ret
     endingScreen ENDP
+    
+; rank PROC USES eax ebx ecx edx esi
+    ; LOCAL UserName[10]:BYTE,fileScoreHandle:HANDLE,fileNameHandle:HANDLE,scoreBuffer[500]:BYTE,newScoreBuffer[500]:BYTE,nameBuffer[500]:BYTE
+  ; READNAME:
+    ; call Clrscr
+  ;   mov edx,OFFSET rankAsking
+  ;   call WriteString
+  ;   lea edx,[UserName]
+  ;   mov [UserName+10],0
+  ;   mov ecx,11
+  ;   call ReadString
+  ;   .IF [UserName+10]!=0
+  ;   mov edx,OFFSET NameTooLong
+  ;   call WriteString
+  ;   INVOKE Sleep,2000
+  ;   jmp READNAME
+  ;   .ENDIF
+  ;   mov ecx,10
+  ;   mov esi,0
+  ; CHECKNAME:
+  ;   mov al,[UserName+esi]
+  ;   .IF al=='|'
+  ;   mov edx,OFFSET WrongName
+  ;   call WriteString
+  ;   INVOKE Sleep,2000
+  ;   jmp READNAME
+  ;   .ENDIF
+  ;   inc esi
+  ;   LOOP CHECKNAME
+    ; mov	edx,OFFSET rankScoreFile
+	  ; call OpenInputFile
+	  ; mov	fileScoreHandle,eax
+    ; lea	edx,[scoreBuffer]
+	  ; mov	ecx,160
+	  ; call ReadFromFile
+    ; call CloseFile
+  ;   mov eax,score
+  ;   mov ecx,32
+  ;   mov esi,0
+  ; WRITESCORE:
+  ;   shl eax,1
+  ;   jc SETONE
+  ;   mov al,0
+  ;   jmp SETDONE
+  ;   SETONE:
+  ;   mov al,1
+  ;   SETDONE:
+  ;   add al,'0'
+  ;   mov [newScoreBuffer+esi],al
+  ;   inc esi
+  ;   LOOP WRITESCORE
+  ;   mov [newScoreBuffer+32],0
+  ;   lea edx,[newScoreBuffer]
+  ;   call WriteString
+  ;   call Crlf
+  ;   mov eax,score
+  ;   call WriteInt
+  ;   call WaitMsg
+  ;   mov ecx,128
+  ;   mov esi,0
+  ; CHANGERANK:
+  ;   mov al,[ScoreBuffer+esi]
+  ;   mov [newScoreBuffer+esi+32],al
+  ;   LOOP CHANGERANK
+    ; INVOKE CreateFile,OFFSET rankScoreFile,GENERIC_WRITE,DO_NOT_SHARE,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0
+    ; mov	fileScoreHandle,eax
+    ; lea	edx,[newScoreBuffer]
+    ; mov ecx,32
+    ; mov eax,fileScoreHandle
+    ; call WriteToFile
+    ; ret
+    ; rank ENDP
 
 END main
