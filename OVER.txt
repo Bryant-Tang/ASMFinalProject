@@ -17,8 +17,8 @@
 -                                    ------          --       ----------   --       --                                -
 -                                                                                                                     -
 -                                                                                                                     -
--                                            PRESS ANY KEY TO END THE GAME                                            -
--                                                                                                                     -
+-                                            PRESS SPACE TO RESTART THE GAME                                          -
+-                                            PRESS OTHER KEY TO END THE GAME                                          -
 -                                                                                                                     -
 -                                                                                                                     -
 -                                                                                                                     -
