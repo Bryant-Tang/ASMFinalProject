@@ -8,6 +8,14 @@ enemyCreate PROTO                           ;判斷敵人是否生成
 enemyDraw PROTO                             ;判斷是否畫出敵人
 enemyMove PROTO                             ;判斷前方是否有敵人並向前移動
 gameOver PROTO                              ;判斷是否撞上敵人
+springCreate PROTO
+springDraw PROTO
+springMove PROTO 
+springDetect PROTO
+accelerateCreate PROTO
+accelerateDraw PROTO
+accelerateMove PROTO
+accelerateDetect PROTO
 scoreConsole PROTO                          ;顯示分數
 endingScreen PROTO                          ;結束頁面
 beginScreen PROTO                           ;開始頁面
@@ -22,16 +30,23 @@ CMDHEIGHT = 30
 block BYTE ?
 restart BYTE ?
 enemyProbability DWORD 10000
+springProbability DWORD 10000
+accelerateProbability DWORD 10000
 delayTime DWORD 50
 begintext BYTE 10000 DUP(?)
 pausetext BYTE 10000 DUP(?)
 endingtext BYTE 10000 DUP(?)
 enemyRow BYTE 120 DUP(0)
+springRow BYTE 120 DUP(0)
 enemyHeight WORD 120 DUP(0)
+accelerateRow BYTE 120 DUP(0)
 height DWORD 0 
 onGround WORD 20
 ground WORD 21
 enemy DWORD 0 
+spring DWORD 0
+accelerate DWORD 0 
+kingKrim DWORD 0
 outputHandle DWORD 0
 inputHandle DWORD 0
 count DWORD 0
@@ -101,9 +116,22 @@ RESET:
     call RandomRange
     inc eax
     mov height,eax
-    INVOKE enemyMove                          ;判斷是否有舊的敵人並向前移動
-    INVOKE gameOver                           ;判斷是否撞上敵人
-    INVOKE enemyCreate                        ;判斷敵人生成
+    mov eax,1000000                            ;產生彈簧變數
+    call RandomRange
+    mov spring,eax
+    mov eax,1000000                            ;產生彈簧變數
+    call RandomRange
+    mov accelerate,eax
+    INVOKE enemyMove                           ;判斷是否有舊的敵人並向前移動
+    INVOKE springMove                          ;判斷是否有舊的彈簧並向前移動
+    INVOKE accelerateMove                      ;判斷是否有舊的加速板並向前移動
+    INVOKE gameOver                            ;判斷是否撞上敵人
+    INVOKE springDetect                        ;判斷是否撞上彈簧
+    INVOKE accelerateDetect                    ;判斷是否撞上加速板
+    INVOKE enemyCreate                         ;判斷敵人生成
+    INVOKE springCreate                        ;判斷彈簧生成
+    INVOKE accelerateCreate                    ;判斷加速板生成
+    INVOKE consoleChange                       ;畫出畫面
     mov eax,score
     shr eax,16
     add eax,10
@@ -118,7 +146,6 @@ RESET:
   DelayEDIT:
     mov eax,ebx                           ;延遲
     call Delay
-    INVOKE consoleChange
     inc ebx
     .IF gameovercheck==1
       jmp L2
@@ -139,12 +166,15 @@ RESET:
 main ENDP
 
 initialization PROC USES eax ebx ecx esi        ;初始化
+    call Randomize
     mov enemyProbability,10000
     mov delayTime,50
     mov ecx,120
     mov esi,0
   INITIAL:
     mov [enemyRow+esi],0
+    mov [springRow+esi],0
+    mov [accelerateRow+esi],0
     mov [enemyHeight+esi],0
     inc esi
     LOOP INITIAL
@@ -155,6 +185,7 @@ initialization PROC USES eax ebx ecx esi        ;初始化
     mov jumping,0
     mov gameovercheck,0
     mov score,0
+    mov kingKrim,0
     ret
     initialization ENDP
 
@@ -172,6 +203,8 @@ consoleChange PROC                          ;畫出遊戲畫面
     INVOKE characterCheck                   ;判斷角色位置
     INVOKE groundCheck                      ;判斷地板位置
     INVOKE enemyDraw                        ;判斷畫出敵人
+    INVOKE springDraw                       ;判斷畫出彈簧
+    INVOKE accelerateDraw                   ;判斷畫出加速板
     INVOKE WriteConsoleOutputCharacter,     ;輸出一格
        outputHandle,   
        ADDR block,   
@@ -218,7 +251,7 @@ groundCheck PROC USES eax ebx ecx           ;判斷地板位置
     ret
     groundCheck ENDP
 
-enemyCreate PROC USES eax ebx esi               ;判斷敵人是否生成
+enemyCreate PROC USES eax ebx ecx esi               ;判斷敵人是否生成
     mov ebx,enemyProbability                    ;增加機率
     inc ebx
     mov enemyProbability,ebx
@@ -276,6 +309,133 @@ gameOver PROC USES eax ebx ecx esi             ;判斷遊戲結束
     .ENDIF
     ret
     gameOver ENDP
+
+springCreate PROC USES eax ebx ecx esi               ;判斷彈簧是否生成
+    mov eax,springProbability                   
+    mov esi,119
+    .IF eax>spring && [enemyRow+esi]==0             ;機率生成彈簧
+      mov [springRow+esi],1
+    .ENDIF
+    ret
+    springCreate ENDP
+
+springDraw PROC USES eax ebx ecx esi         ;判斷是否畫出敵人
+    movzx esi,xyPosition.X                  ;如果當前X座標對應到彈簧陣列中不是1就不畫
+    .IF [springRow+esi]==1
+      mov ax,onGround                               ;如果當前Y座標不是地板上就不畫
+      mov bx,xyPosition.Y
+      .IF ax==bx
+        mov block,'Z'
+      .ENDIF
+    .ENDIF
+    ret
+    springDraw ENDP
+
+springMove PROC USES eax ecx esi             ;每一次清除版面重畫就判斷敵人移動
+    mov esi,0
+    mov ecx,119
+  SPRINGLEFT:                                ;敵人陣列全部往前複製
+    mov al,[springRow+esi+1]
+    mov [springRow+esi],al
+    inc esi
+    LOOP SPRINGLEFT
+    mov esi,119                             ;彈簧陣列最後一個補0
+    mov [springRow+esi],0
+    ret
+    springMove ENDP
+
+springDetect PROC USES eax ebx ecx esi             ;判斷遊戲結束
+    movzx esi,characterPosition.X              ;如果當前X座標對應到敵人陣列中不是1就沒事
+    .IF [springRow+esi]==1
+      mov ax,onGround                               ;如果當前Y座標不是地板上就沒事
+      mov bx,characterPosition.Y
+      .IF ax==bx
+      mov ecx,7
+  SPRINGOVER:
+        mov eax,5                           ;延遲
+        call Delay
+        dec characterPosition.y
+        LOOP SPRINGOVER
+      .ENDIF
+    .ENDIF
+    ret
+    springDetect ENDP
+
+accelerateCreate PROC USES eax ebx ecx esi               ;判斷彈簧是否生成
+    mov eax,accelerateProbability                   
+    mov esi,119
+    .IF eax>accelerate && [enemyRow+esi]==0 && [springRow+esi]==0           ;機率生成彈簧
+      mov [accelerateRow+esi],1
+    .ENDIF
+    ret
+    accelerateCreate ENDP
+
+accelerateDraw PROC USES eax ebx ecx esi         ;判斷是否畫出敵人
+    movzx esi,xyPosition.X                  ;如果當前X座標對應到彈簧陣列中不是1就不畫
+    .IF [accelerateRow+esi]==1
+      mov ax,onGround                               ;如果當前Y座標不是地板上就不畫
+      mov bx,xyPosition.Y
+      .IF ax==bx
+        mov block,'C'
+      .ENDIF
+    .ENDIF
+    ret
+    accelerateDraw ENDP
+
+accelerateMove PROC USES eax ecx esi             ;每一次清除版面重畫就判斷敵人移動
+    mov esi,0
+    mov ecx,119
+  ACCELERATELEFT:                                ;敵人陣列全部往前複製
+    mov al,[accelerateRow+esi+1]
+    mov [accelerateRow+esi],al
+    inc esi
+    LOOP ACCELERATELEFT
+    mov esi,119                             ;彈簧陣列最後一個補0
+    mov [accelerateRow+esi],0
+    ret
+    accelerateMove ENDP
+
+accelerateDetect PROC USES eax ebx ecx esi             ;判斷遊戲結束
+    movzx esi,characterPosition.X              ;如果當前X座標對應到敵人陣列中不是1就沒事
+    .IF [accelerateRow+esi]==1
+      mov ax,onGround                               ;如果當前Y座標不是地板上就沒事
+      mov bx,characterPosition.Y
+      .IF ax==bx
+      mov kingKrim,5
+  ACCERLERATEOVER:
+      mov eax,1000000                            ;產生敵人變數
+      call RandomRange
+      mov enemy,eax
+      mov eax,3                                 ;產生敵人高度變數
+      call RandomRange
+      inc eax
+      mov height,eax
+      mov eax,1000000                            ;產生彈簧變數
+      call RandomRange
+      mov spring,eax
+      mov eax,1000000                            ;產生彈簧變數
+      call RandomRange
+      mov accelerate,eax
+      INVOKE enemyMove                           ;判斷是否有舊的敵人並向前移動
+      INVOKE springMove                          ;判斷是否有舊的彈簧並向前移動
+      INVOKE accelerateMove                      ;判斷是否有舊的加速板並向前移動
+      INVOKE gameOver                            ;判斷是否撞上敵人
+      INVOKE springDetect                        ;判斷是否撞上彈簧
+      INVOKE accelerateDetect                    ;判斷是否撞上加速板
+      INVOKE enemyCreate                         ;判斷敵人生成
+      INVOKE springCreate                        ;判斷彈簧生成
+      INVOKE accelerateCreate                    ;判斷加速板生成
+      INVOKE consoleChange                       ;畫出畫面
+      inc score
+      mov eax,1                           ;延遲
+      call Delay
+      dec kingKrim
+      cmp kingKrim,0
+      jne ACCERLERATEOVER
+      .ENDIF
+    .ENDIF
+    ret
+    accelerateDetect ENDP
 
 beginScreen PROC USES eax ecx edx              ;開始畫面
     LOCAL fileHandle:HANDLE,buffer[5000]:BYTE
