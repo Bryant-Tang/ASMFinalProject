@@ -283,9 +283,9 @@ beginScreen PROC USES eax ecx edx              ;開始畫面
 	  call OpenInputFile
 	  mov	fileHandle,eax                         ;讀檔案到buffer裡
     lea	edx,[buffer]
-	  mov	ecx,3659
+	  mov	ecx,3627
 	  call ReadFromFile
-    mov [buffer+3659],0
+    mov [buffer+3627],0
     call Clrscr                                ;清空螢幕
     lea	edx,[buffer]                           ;印出buffer
 	  call WriteString
@@ -300,9 +300,9 @@ pauseScreen PROC USES eax ecx edx              ;暫停畫面
 	  call OpenInputFile
 	  mov	fileHandle,eax
     lea	edx,[buffer]
-	  mov	ecx,3659
+	  mov	ecx,3627
 	  call ReadFromFile
-    mov [buffer+3659],0
+    mov [buffer+3627],0
     call Clrscr
     lea	edx,[buffer]
 	  call WriteString
@@ -318,9 +318,9 @@ endingScreen PROC USES eax ecx edx              ;結束畫面
 	  call OpenInputFile
 	  mov	fileHandle,eax
     lea	edx,[buffer]
-	  mov	ecx,3659
+	  mov	ecx,3627
 	  call ReadFromFile
-    mov [buffer+3659],0
+    mov [buffer+3627],0
     call Clrscr
     lea	edx,[buffer]
 	  call WriteString
