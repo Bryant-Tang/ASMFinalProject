@@ -158,7 +158,7 @@ RESET:
     INVOKE coinCreate                          ;判斷金幣生成
     INVOKE consoleChange                       ;畫出畫面
     mov eax,score
-    shr eax,16
+    shr eax,6
     add eax,10
     .IF eax>=delayTime
       mov delayTime,10
@@ -281,9 +281,7 @@ groundCheck PROC USES eax ebx ecx           ;判斷地板位置
     groundCheck ENDP
 
 enemyCreate PROC USES eax ebx ecx esi               ;判斷敵人是否生成
-    mov ebx,enemyProbability                    ;增加機率
-    inc ebx
-    mov enemyProbability,ebx
+    add enemyProbability,10                    ;增加機率
     mov eax,enemyProbability                    ;機率生成敵人
     .IF eax>enemy
       mov esi,119                             ;用陣列存位置
