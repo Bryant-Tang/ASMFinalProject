@@ -180,7 +180,7 @@ RESET:
         outputHandle,
         scorePosition
     mov eax,score
-    call WriteInt
+    call WriteDec
     jmp L1
   L2:
     INVOKE endingScreen
