@@ -285,10 +285,12 @@ beginScreen PROC USES eax ecx edx              ;開始畫面
     lea	edx,[buffer]
 	  mov	ecx,3659
 	  call ReadFromFile
+    mov [buffer+3659],0
     call Clrscr                                ;清空螢幕
     lea	edx,[buffer]                           ;印出buffer
 	  call WriteString
     call ReadChar
+    call Clrscr
     ret
     beginScreen ENDP
 
@@ -300,12 +302,12 @@ pauseScreen PROC USES eax ecx edx              ;暫停畫面
     lea	edx,[buffer]
 	  mov	ecx,3659
 	  call ReadFromFile
+    mov [buffer+3659],0
     call Clrscr
     lea	edx,[buffer]
 	  call WriteString
     call ReadChar
-    mov edx,OFFSET scoreString
-    call WriteString
+    call Clrscr
     INVOKE consoleChange
     ret
     pauseScreen ENDP
@@ -318,10 +320,12 @@ endingScreen PROC USES eax ecx edx              ;結束畫面
     lea	edx,[buffer]
 	  mov	ecx,3659
 	  call ReadFromFile
+    mov [buffer+3659],0
     call Clrscr
     lea	edx,[buffer]
 	  call WriteString
     call ReadChar
+    call Clrscr
     .IF al==20h
       mov restart,1
     .ENDIF
