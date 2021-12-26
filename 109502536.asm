@@ -8,14 +8,18 @@ enemyCreate PROTO                           ;判斷敵人是否生成
 enemyDraw PROTO                             ;判斷是否畫出敵人
 enemyMove PROTO                             ;判斷前方是否有敵人並向前移動
 gameOver PROTO                              ;判斷是否撞上敵人
-springCreate PROTO
-springDraw PROTO
-springMove PROTO 
-springDetect PROTO
-accelerateCreate PROTO
-accelerateDraw PROTO
-accelerateMove PROTO
-accelerateDetect PROTO
+springCreate PROTO                          ;判斷彈簧是否生成
+springDraw PROTO                            ;判斷是否畫出彈簧
+springMove PROTO                            ;判斷前方是否有彈簧並向前移動
+springDetect PROTO                          ;判斷是否撞上彈簧
+accelerateCreate PROTO                      ;判斷加速板是否生成
+accelerateDraw PROTO                        ;判斷是否畫出加速板
+accelerateMove PROTO                        ;判斷前方是否有加速板並向前移動
+accelerateDetect PROTO                      ;判斷是否撞上加速板
+coinCreate PROTO                            ;判斷金幣是否生成
+coinDraw PROTO                              ;判斷是否畫出金幣
+coinMove PROTO                              ;判斷前方是否有金幣並向前移動
+coinDetect PROTO                            ;判斷是否撞上金幣
 scoreConsole PROTO                          ;顯示分數
 endingScreen PROTO                          ;結束頁面
 beginScreen PROTO                           ;開始頁面
@@ -32,6 +36,7 @@ restart BYTE ?
 enemyProbability DWORD 10000
 springProbability DWORD 10000
 accelerateProbability DWORD 10000
+coinProbability DWORD 10000
 delayTime DWORD 50
 begintext BYTE 10000 DUP(?)
 pausetext BYTE 10000 DUP(?)
@@ -40,13 +45,19 @@ enemyRow BYTE 120 DUP(0)
 springRow BYTE 120 DUP(0)
 enemyHeight WORD 120 DUP(0)
 accelerateRow BYTE 120 DUP(0)
+accelerateHeight WORD 120 DUP(0)
+coinRow BYTE 120 DUP(0)
+coinHeight WORD 120 DUP(0)
 height DWORD 0 
 onGround WORD 20
 ground WORD 21
 enemy DWORD 0 
 spring DWORD 0
-accelerate DWORD 0 
+accelerate DWORD 0
+aheight DWORD 0  
 kingKrim DWORD 0
+coin DWORD 0
+cheight DWORD 0 
 outputHandle DWORD 0
 inputHandle DWORD 0
 count DWORD 0
@@ -70,7 +81,7 @@ RESET:
   INVOKE initialization
   INVOKE GetStdHandle, STD_OUTPUT_HANDLE    ; Get the console ouput handle
     mov outputHandle, eax
-  INVOKE GetStdHandle, STD_INPUT_HANDLE    ; Get the console ouput handle
+  INVOKE GetStdHandle, STD_INPUT_HANDLE    ; Get the console input handle
     mov inputHandle, eax
     INVOKE SetConsoleWindowInfo,          ;設定console範圍
       outputHandle,
@@ -87,11 +98,11 @@ RESET:
     mov ax,0
     call ReadKey
     mov bx,onGround
-    .IF al==20h && characterPosition.Y==bx
+    .IF ax==3920h && characterPosition.Y==bx
       inc jumping                           ;開始跳躍過程
       dec characterPosition.Y
     .ENDIF 
-    .IF al==1Bh                             ;暫停遊戲
+    .IF ax==011Bh                             ;暫停遊戲
         INVOKE pauseScreen
     .ENDIF
     mov bx,onGround                                 
@@ -119,18 +130,32 @@ RESET:
     mov eax,1000000                            ;產生彈簧變數
     call RandomRange
     mov spring,eax
-    mov eax,1000000                            ;產生彈簧變數
+    mov eax,1000000                            ;產生加速板變數
     call RandomRange
     mov accelerate,eax
+    mov eax,3                                 ;產生加速板高度變數
+    call RandomRange
+    inc eax
+    mov aheight,eax
+    mov eax,1000000                            ;產生金幣變數
+    call RandomRange
+    mov coin,eax
+    mov eax,3                                 ;產生金幣高度變數
+    call RandomRange
+    inc eax
+    mov cheight,eax
     INVOKE enemyMove                           ;判斷是否有舊的敵人並向前移動
     INVOKE springMove                          ;判斷是否有舊的彈簧並向前移動
     INVOKE accelerateMove                      ;判斷是否有舊的加速板並向前移動
+    INVOKE coinMove                            ;判斷是否有舊的金幣並向前移動
     INVOKE gameOver                            ;判斷是否撞上敵人
     INVOKE springDetect                        ;判斷是否撞上彈簧
     INVOKE accelerateDetect                    ;判斷是否撞上加速板
+    INVOKE coinDetect                          ;判斷是否撞上金幣
     INVOKE enemyCreate                         ;判斷敵人生成
     INVOKE springCreate                        ;判斷彈簧生成
     INVOKE accelerateCreate                    ;判斷加速板生成
+    INVOKE coinCreate                          ;判斷金幣生成
     INVOKE consoleChange                       ;畫出畫面
     mov eax,score
     shr eax,16
@@ -175,7 +200,10 @@ initialization PROC USES eax ebx ecx esi        ;初始化
     mov [enemyRow+esi],0
     mov [springRow+esi],0
     mov [accelerateRow+esi],0
+    mov [coinRow+esi],0
     mov [enemyHeight+esi],0
+    mov [accelerateHeight+esi],0
+    mov [coinHeight+esi],0
     inc esi
     LOOP INITIAL
     mov xyPosition.x,0
@@ -205,6 +233,7 @@ consoleChange PROC                          ;畫出遊戲畫面
     INVOKE enemyDraw                        ;判斷畫出敵人
     INVOKE springDraw                       ;判斷畫出彈簧
     INVOKE accelerateDraw                   ;判斷畫出加速板
+    INVOKE coinDraw                         ;判斷畫出金幣
     INVOKE WriteConsoleOutputCharacter,     ;輸出一格
        outputHandle,   
        ADDR block,   
@@ -236,7 +265,7 @@ characterCheck PROC USES eax ebx ecx        ;判斷角色位置
     shl ebx,16
     mov bx,xyPosition.Y
     .IF eax==ebx                             ;利用eax ebx存取座標並比較,若相同則畫上0
-      mov block,'0'
+      mov block,'H'
     .ENDIF
     ret
     characterCheck ENDP
@@ -281,7 +310,7 @@ enemyDraw PROC USES eax ebx ecx esi         ;判斷是否畫出敵人
     ret
     enemyDraw ENDP
 
-enemyMove PROC USES eax ecx esi             ;每一次清除版面重畫就判斷敵人移動
+enemyMove PROC USES eax ecx esi             ;每一次重畫就判斷敵人移動
     mov esi,0
     mov ecx,119
   ENEMYLEFT:                                ;敵人陣列全部往前複製
@@ -319,7 +348,7 @@ springCreate PROC USES eax ebx ecx esi               ;判斷彈簧是否生成
     ret
     springCreate ENDP
 
-springDraw PROC USES eax ebx ecx esi         ;判斷是否畫出敵人
+springDraw PROC USES eax ebx ecx esi         ;判斷是否畫出彈簧
     movzx esi,xyPosition.X                  ;如果當前X座標對應到彈簧陣列中不是1就不畫
     .IF [springRow+esi]==1
       mov ax,onGround                               ;如果當前Y座標不是地板上就不畫
@@ -331,10 +360,10 @@ springDraw PROC USES eax ebx ecx esi         ;判斷是否畫出敵人
     ret
     springDraw ENDP
 
-springMove PROC USES eax ecx esi             ;每一次清除版面重畫就判斷敵人移動
+springMove PROC USES eax ecx esi             ;每一次重畫就判斷彈簧移動
     mov esi,0
     mov ecx,119
-  SPRINGLEFT:                                ;敵人陣列全部往前複製
+  SPRINGLEFT:                                ;彈簧陣列全部往前複製
     mov al,[springRow+esi+1]
     mov [springRow+esi],al
     inc esi
@@ -344,10 +373,10 @@ springMove PROC USES eax ecx esi             ;每一次清除版面重畫就判�
     ret
     springMove ENDP
 
-springDetect PROC USES eax ebx ecx esi             ;判斷遊戲結束
-    movzx esi,characterPosition.X              ;如果當前X座標對應到敵人陣列中不是1就沒事
+springDetect PROC USES eax ebx ecx esi             ;判斷彈簧
+    movzx esi,characterPosition.X              ;如果當前X座標對應到彈簧陣列中不是1就沒事
     .IF [springRow+esi]==1
-      mov ax,onGround                               ;如果當前Y座標不是地板上就沒事
+      mov ax,onGround                              
       mov bx,characterPosition.Y
       .IF ax==bx
       mov ecx,7
@@ -361,19 +390,25 @@ springDetect PROC USES eax ebx ecx esi             ;判斷遊戲結束
     ret
     springDetect ENDP
 
-accelerateCreate PROC USES eax ebx ecx esi               ;判斷彈簧是否生成
+accelerateCreate PROC USES eax ebx ecx esi               ;判斷加速板是否生成
     mov eax,accelerateProbability                   
     mov esi,119
-    .IF eax>accelerate && [enemyRow+esi]==0 && [springRow+esi]==0           ;機率生成彈簧
+    .IF eax>accelerate && [enemyRow+esi]==0 && [springRow+esi]==0           ;機率生成加速板
       mov [accelerateRow+esi],1
+    .ENDIF
+    .IF eax>accelerate && [enemyRow+esi]==0 && [springRow+esi]==0
+      mov esi,119                             ;用陣列存高度
+      mov eax,aheight
+      mov [accelerateHeight+esi],ax
     .ENDIF
     ret
     accelerateCreate ENDP
 
-accelerateDraw PROC USES eax ebx ecx esi         ;判斷是否畫出敵人
-    movzx esi,xyPosition.X                  ;如果當前X座標對應到彈簧陣列中不是1就不畫
+accelerateDraw PROC USES eax ebx ecx esi         ;判斷是否畫出加速板
+    movzx esi,xyPosition.X                  ;如果當前X座標對應到加速板陣列中不是1就不畫
     .IF [accelerateRow+esi]==1
-      mov ax,onGround                               ;如果當前Y座標不是地板上就不畫
+      mov ax,ground                               ;如果當前Y座標不是地板-高度就不畫
+      sub ax,[accelerateHeight+esi]
       mov bx,xyPosition.Y
       .IF ax==bx
         mov block,'C'
@@ -382,26 +417,30 @@ accelerateDraw PROC USES eax ebx ecx esi         ;判斷是否畫出敵人
     ret
     accelerateDraw ENDP
 
-accelerateMove PROC USES eax ecx esi             ;每一次清除版面重畫就判斷敵人移動
+accelerateMove PROC USES eax ecx esi             ;每一次清除版面重畫就判斷加速板移動
     mov esi,0
     mov ecx,119
-  ACCELERATELEFT:                                ;敵人陣列全部往前複製
+  ACCELERATELEFT:                                ;加速板陣列全部往前複製
     mov al,[accelerateRow+esi+1]
     mov [accelerateRow+esi],al
+    mov ax,[accelerateHeight+esi+1]
+    mov [accelerateHeight+esi],ax
     inc esi
     LOOP ACCELERATELEFT
-    mov esi,119                             ;彈簧陣列最後一個補0
+    mov esi,119                             ;加速板陣列最後一個補0
     mov [accelerateRow+esi],0
+    mov [accelerateHeight+esi],0
     ret
     accelerateMove ENDP
 
-accelerateDetect PROC USES eax ebx ecx esi             ;判斷遊戲結束
-    movzx esi,characterPosition.X              ;如果當前X座標對應到敵人陣列中不是1就沒事
+accelerateDetect PROC USES eax ebx ecx esi             ;判斷加速板
+    movzx esi,characterPosition.X              ;如果當前X座標對應到加速板陣列中不是1就沒事
     .IF [accelerateRow+esi]==1
-      mov ax,onGround                               ;如果當前Y座標不是地板上就沒事
+      mov ax,ground                               ;如果當前Y座標不是地板-高度就沒事
+      sub ax,[accelerateHeight+esi]
       mov bx,characterPosition.Y
       .IF ax==bx
-      mov kingKrim,5
+      mov kingKrim,10
   ACCERLERATEOVER:
       mov eax,1000000                            ;產生敵人變數
       call RandomRange
@@ -416,15 +455,26 @@ accelerateDetect PROC USES eax ebx ecx esi             ;判斷遊戲結束
       mov eax,1000000                            ;產生彈簧變數
       call RandomRange
       mov accelerate,eax
+      mov eax,3                                 ;產生加速板高度變數
+      call RandomRange
+      inc eax
+      mov aheight,eax
+      mov eax,1000000                            ;產生硬幣變數
+      call RandomRange
+      mov coin,eax
+      mov eax,3                                 ;產生硬幣高度變數
+      call RandomRange
+      inc eax
+      mov cheight,eax
       INVOKE enemyMove                           ;判斷是否有舊的敵人並向前移動
       INVOKE springMove                          ;判斷是否有舊的彈簧並向前移動
       INVOKE accelerateMove                      ;判斷是否有舊的加速板並向前移動
-      INVOKE gameOver                            ;判斷是否撞上敵人
-      INVOKE springDetect                        ;判斷是否撞上彈簧
-      INVOKE accelerateDetect                    ;判斷是否撞上加速板
+      INVOKE coinMove                            ;判斷是否有舊的金幣並向前移動
+      INVOKE coinDetect                          ;判斷是否撞上金幣
       INVOKE enemyCreate                         ;判斷敵人生成
       INVOKE springCreate                        ;判斷彈簧生成
       INVOKE accelerateCreate                    ;判斷加速板生成
+      INVOKE coinCreate                          ;判斷金幣生成
       INVOKE consoleChange                       ;畫出畫面
       inc score
       mov eax,1                           ;延遲
@@ -436,6 +486,63 @@ accelerateDetect PROC USES eax ebx ecx esi             ;判斷遊戲結束
     .ENDIF
     ret
     accelerateDetect ENDP
+
+coinCreate PROC USES eax ebx ecx esi               ;判斷金幣是否生成
+    mov eax,coinProbability                   
+    mov esi,119
+    .IF eax>coin && [enemyRow+esi]==0 && [springRow+esi]==0 && [accelerateRow+esi]==0        ;機率生成金幣
+      mov [coinRow+esi],1
+    .ENDIF
+    .IF eax>coin && [enemyRow+esi]==0 && [springRow+esi]==0 && [accelerateRow+esi]==0
+      mov esi,119                             ;用陣列存高度
+      mov eax,cheight
+      mov [coinHeight+esi],ax
+    .ENDIF
+    ret
+    coinCreate ENDP
+
+coinDraw PROC USES eax ebx ecx esi         ;判斷是否畫出金幣
+    movzx esi,xyPosition.X                  ;如果當前X座標對應到金幣陣列中不是1就不畫
+    .IF [coinRow+esi]==1
+      mov ax,ground                               ;如果當前Y座標不是地板-高度就不畫
+      sub ax,[coinHeight+esi]
+      mov bx,xyPosition.Y
+      .IF ax==bx
+        mov block,'O'
+      .ENDIF
+    .ENDIF
+    ret
+    coinDraw ENDP
+
+coinMove PROC USES eax ecx esi             ;每一次清除版面重畫就判斷金幣移動
+    mov esi,0
+    mov ecx,119
+  COINLEFT:                                ;金幣陣列全部往前複製
+    mov al,[coinRow+esi+1]
+    mov [coinRow+esi],al
+    mov ax,[coinHeight+esi+1]
+    mov [coinHeight+esi],ax
+    inc esi
+    LOOP COINLEFT
+    mov esi,119                             ;金幣陣列最後一個補0
+    mov [coinRow+esi],0
+    mov [coinHeight+esi],0
+    ret
+    coinMove ENDP
+
+coinDetect PROC USES eax ebx ecx esi             ;判斷金幣
+    movzx esi,characterPosition.X              ;如果當前X座標對應到金幣陣列中不是1就沒事
+    .IF [coinRow+esi]==1
+      mov ax,ground                               ;如果當前Y座標不是地板-高度就沒事
+      sub ax,[coinHeight+esi]
+      mov bx,characterPosition.Y
+      .IF ax==bx
+        add score,10
+        mov [coinRow+esi],0
+      .ENDIF
+    .ENDIF
+    ret
+    coinDetect ENDP
 
 beginScreen PROC USES eax ecx edx              ;開始畫面
     LOCAL fileHandle:HANDLE,buffer[5000]:BYTE
@@ -486,10 +593,10 @@ endingScreen PROC USES eax ecx edx              ;結束畫面
 	  call WriteString
     call ReadChar
     call Clrscr
-    .IF al==20h
+    .IF ax==3920h
       mov restart,1
     .ENDIF
-    .IF al!=20h
+    .IF ax!=3920h
       mov restart,0
     .ENDIF
     ret
