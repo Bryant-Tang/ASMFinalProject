@@ -98,8 +98,8 @@ RESET:
     mov ax,0
     call ReadKey
     mov bx,onGround
-    .IF ax==3920h && characterPosition.Y==bx
-      inc jumping                           ;開始跳躍過程
+    .IF ax==3920h && characterPosition.Y==bx    
+      inc jumping                              ;開始跳躍過程
       dec characterPosition.Y
     .ENDIF 
     .IF ax==011Bh                             ;暫停遊戲
