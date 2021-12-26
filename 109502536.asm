@@ -35,8 +35,8 @@ block BYTE ?
 restart BYTE ?
 enemyProbability DWORD 10000
 springProbability DWORD 10000
-accelerateProbability DWORD 10000
-coinProbability DWORD 10000
+accelerateProbability DWORD 20000
+coinProbability DWORD 50000
 delayTime DWORD 50
 begintext BYTE 10000 DUP(?)
 pausetext BYTE 10000 DUP(?)
