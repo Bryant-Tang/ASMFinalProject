@@ -1,30 +1,32 @@
 INCLUDE Irvine32.inc
 
 
-consoleChange PROTO                         ;è¢å¹•æ¸…é™¤ä¸¦ç•«ç·š
-characterCheck PROTO                        ;åˆ¤æ–·è§’è‰²ä½ç½®
-groundCheck PROTO                           ;åˆ¤æ–·åœ°æ¿ä½ç½®
-enemyCreate PROTO                           ;åˆ¤æ–·æ•µäººæ˜¯å¦ç”Ÿæˆ
-enemyDraw PROTO                             ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºæ•µäºº
-enemyMove PROTO                             ;åˆ¤æ–·å‰æ–¹æ˜¯å¦æœ‰æ•µäººä¸¦å‘å‰ç§»å‹•
-gameOver PROTO                              ;åˆ¤æ–·æ˜¯å¦æ’ä¸Šæ•µäºº
-springCreate PROTO                          ;åˆ¤æ–·å½ˆç°§æ˜¯å¦ç”Ÿæˆ
-springDraw PROTO                            ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºå½ˆç°§
-springMove PROTO                            ;åˆ¤æ–·å‰æ–¹æ˜¯å¦æœ‰å½ˆç°§ä¸¦å‘å‰ç§»å‹•
-springDetect PROTO                          ;åˆ¤æ–·æ˜¯å¦æ’ä¸Šå½ˆç°§
-accelerateCreate PROTO                      ;åˆ¤æ–·åŠ é€Ÿæ¿æ˜¯å¦ç”Ÿæˆ
-accelerateDraw PROTO                        ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºåŠ é€Ÿæ¿
-accelerateMove PROTO                        ;åˆ¤æ–·å‰æ–¹æ˜¯å¦æœ‰åŠ é€Ÿæ¿ä¸¦å‘å‰ç§»å‹•
-accelerateDetect PROTO                      ;åˆ¤æ–·æ˜¯å¦æ’ä¸ŠåŠ é€Ÿæ¿
-coinCreate PROTO                            ;åˆ¤æ–·é‡‘å¹£æ˜¯å¦ç”Ÿæˆ
-coinDraw PROTO                              ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºé‡‘å¹£
-coinMove PROTO                              ;åˆ¤æ–·å‰æ–¹æ˜¯å¦æœ‰é‡‘å¹£ä¸¦å‘å‰ç§»å‹•
-coinDetect PROTO                            ;åˆ¤æ–·æ˜¯å¦æ’ä¸Šé‡‘å¹£
-scoreConsole PROTO                          ;é¡¯ç¤ºåˆ†æ•¸
-endingScreen PROTO                          ;çµæŸé é¢
-beginScreen PROTO                           ;é–‹å§‹é é¢
-pauseScreen PROTO                           ;æš«åœé é¢
-initialization PROTO                        ;åˆå§‹åŒ–
+consoleChange PROTO                         ;¿Ã¹õ²M°£¨Ãµe½u
+characterCheck PROTO                        ;§PÂ_¨¤¦â¦ì¸m
+groundCheck PROTO                           ;§PÂ_¦aªO¦ì¸m
+enemyCreate PROTO                           ;§PÂ_¼Ä¤H¬O§_¥Í¦¨
+enemyDraw PROTO                             ;§PÂ_¬O§_µe¥X¼Ä¤H
+enemyMove PROTO                             ;§PÂ_«e¤è¬O§_¦³¼Ä¤H¨Ã¦V«e²¾°Ê
+gameOver PROTO                              ;§PÂ_¬O§_¼²¤W¼Ä¤H
+springCreate PROTO                          ;§PÂ_¼uÂ®¬O§_¥Í¦¨
+springDraw PROTO                            ;§PÂ_¬O§_µe¥X¼uÂ®
+springMove PROTO                            ;§PÂ_«e¤è¬O§_¦³¼uÂ®¨Ã¦V«e²¾°Ê
+springDetect PROTO                          ;§PÂ_¬O§_¼²¤W¼uÂ®
+accelerateCreate PROTO                      ;§PÂ_¥[³tªO¬O§_¥Í¦¨
+accelerateDraw PROTO                        ;§PÂ_¬O§_µe¥X¥[³tªO
+accelerateMove PROTO                        ;§PÂ_«e¤è¬O§_¦³¥[³tªO¨Ã¦V«e²¾°Ê
+accelerateDetect PROTO                      ;§PÂ_¬O§_¼²¤W¥[³tªO
+coinCreate PROTO                            ;§PÂ_ª÷¹ô¬O§_¥Í¦¨
+coinDraw PROTO                              ;§PÂ_¬O§_µe¥Xª÷¹ô
+coinMove PROTO                              ;§PÂ_«e¤è¬O§_¦³ª÷¹ô¨Ã¦V«e²¾°Ê
+coinDetect PROTO                            ;§PÂ_¬O§_¼²¤Wª÷¹ô
+scoreConsole PROTO                          ;Åã¥Ü¤À¼Æ
+endingScreen PROTO                          ;µ²§ô­¶­±
+beginScreen PROTO                           ;¶}©l­¶­±
+pauseScreen PROTO                           ;¼È°±­¶­±
+initialization PROTO                        ;ªì©l¤Æ
+rankScreen PROTO
+rank PROTO                                  ;§PÂ_±Æ¦W
 
 main	EQU start@0
 CMDWIDTH = 120
@@ -33,7 +35,7 @@ CMDHEIGHT = 30
 .data
 block BYTE ?
 restart BYTE ?
-enemyProbability DWORD 10000
+enemyProbability DWORD 10000000
 springProbability DWORD 10000
 accelerateProbability DWORD 20000
 coinProbability DWORD 50000
@@ -63,18 +65,28 @@ inputHandle DWORD 0
 count DWORD 0
 xyPosition COORD <0,12>
 characterPosition COORD <10,20> 
-scoreStringPosition COORD <102,0>
+scoreTitleStringPosition COORD <102,0>
 scorePosition COORD <113,0>
+middlePosition  COORD <50,15>
 smallRect SMALL_RECT <0,0,120,30> 
 consoleScreen COORD <120,30>
 jumping BYTE 0
 gameovercheck BYTE 0
 score DWORD 0
-scoreString BYTE "your score:" , 0
+scoreTitleString BYTE "your score:" , 0
 beginFile BYTE "START.txt",0
 pauseFile BYTE "PAUSE.txt",0
 endingFile BYTE "OVER.txt",0
- 
+rankAsking BYTE "What's your name(10 character at most):",0
+WrongName BYTE "contain invalid character",0
+NameTooLong BYTE "too long",0
+rankScoreFile BYTE "rankScore.txt",0
+rankNameFile BYTE "rankName.txt",0
+backToStart BYTE "«ö¤UªÅ¥ÕÁä¦^¨ìMENU",0
+endTheGame BYTE "«ö¨ä¥LÁäµ²§ô¹CÀ¸",0
+fromEndScreen BYTE 0
+
+
 .code
 main PROC
 RESET:
@@ -83,80 +95,83 @@ RESET:
     mov outputHandle, eax
   INVOKE GetStdHandle, STD_INPUT_HANDLE    ; Get the console input handle
     mov inputHandle, eax
-    INVOKE SetConsoleWindowInfo,          ;è¨­å®šconsoleç¯„åœ
+    INVOKE SetConsoleWindowInfo,          ;³]©wconsole½d³ò
       outputHandle,
       TRUE,
       ADDR smallRect
-    INVOKE SetConsoleScreenBufferSize,      ;è¨­å®šç·©è¡å€å¤§å°
+    INVOKE SetConsoleScreenBufferSize,      ;³]©w½w½Ä°Ï¤j¤p
       outputHandle,
       consoleScreen
-    INVOKE beginScreen
+    .IF fromEndScreen==0
+      INVOKE beginScreen
+    .ENDIF
+    mov fromEndScreen,0
     call Clrscr
     INVOKE consoleChange
     mov ebx,0
-  L1:                                       ;æŒ‰éµè¼¸å…¥
+  L1:                                       ;«öÁä¿é¤J
     mov ax,0
     call ReadKey
     mov bx,onGround
     .IF ax==3920h && characterPosition.Y==bx
-      inc jumping                           ;é–‹å§‹è·³èºéç¨‹
+      inc jumping                           ;¶}©l¸õÅD¹Lµ{
       dec characterPosition.Y
     .ENDIF 
-    .IF ax==011Bh                             ;æš«åœéŠæˆ²
+    .IF ax==011Bh                             ;¼È°±¹CÀ¸
         INVOKE pauseScreen
     .ENDIF
     mov bx,onGround                                 
-    .IF characterPosition.Y<bx              ;è‹¥ä¸åœ¨åœ°ä¸Šå‰‡ä¸‹å¢œ
-      .IF jumping!=0                        ;åˆ¤æ–·æ˜¯å¦åœ¨è·³èºéç¨‹
-        .IF jumping<=7                      ;è·³èºéç¨‹1åˆ°7æ¯æ¬¡å‘ä¸Š1æ ¼
+    .IF characterPosition.Y<bx              ;­Y¤£¦b¦a¤W«h¤U¼Y
+      .IF jumping!=0                        ;§PÂ_¬O§_¦b¸õÅD¹Lµ{
+        .IF jumping<=7                      ;¸õÅD¹Lµ{1¨ì7¨C¦¸¦V¤W1®æ
           inc jumping
           dec characterPosition.Y
         .ENDIF
         .IF jumping>5                       
-          mov jumping,0                     ;è·³èºéç¨‹çµæŸæ­¸é›¶
+          mov jumping,0                     ;¸õÅD¹Lµ{µ²§ôÂk¹s
         .ENDIF
       .ENDIF
       .IF jumping==0
         inc characterPosition.Y
       .ENDIF
     .ENDIF
-    mov eax,1000000                            ;ç”¢ç”Ÿæ•µäººè®Šæ•¸
+    mov eax,1000000                            ;²£¥Í¼Ä¤HÅÜ¼Æ
     call RandomRange
     mov enemy,eax
-    mov eax,3                                 ;ç”¢ç”Ÿæ•µäººé«˜åº¦è®Šæ•¸
+    mov eax,3                                 ;²£¥Í¼Ä¤H°ª«×ÅÜ¼Æ
     call RandomRange
     inc eax
     mov height,eax
-    mov eax,1000000                            ;ç”¢ç”Ÿå½ˆç°§è®Šæ•¸
+    mov eax,1000000                            ;²£¥Í¼uÂ®ÅÜ¼Æ
     call RandomRange
     mov spring,eax
-    mov eax,1000000                            ;ç”¢ç”ŸåŠ é€Ÿæ¿è®Šæ•¸
+    mov eax,1000000                            ;²£¥Í¥[³tªOÅÜ¼Æ
     call RandomRange
     mov accelerate,eax
-    mov eax,3                                 ;ç”¢ç”ŸåŠ é€Ÿæ¿é«˜åº¦è®Šæ•¸
+    mov eax,3                                 ;²£¥Í¥[³tªO°ª«×ÅÜ¼Æ
     call RandomRange
     inc eax
     mov aheight,eax
-    mov eax,1000000                            ;ç”¢ç”Ÿé‡‘å¹£è®Šæ•¸
+    mov eax,1000000                            ;²£¥Íª÷¹ôÅÜ¼Æ
     call RandomRange
     mov coin,eax
-    mov eax,3                                 ;ç”¢ç”Ÿé‡‘å¹£é«˜åº¦è®Šæ•¸
+    mov eax,3                                 ;²£¥Íª÷¹ô°ª«×ÅÜ¼Æ
     call RandomRange
     inc eax
     mov cheight,eax
-    INVOKE enemyMove                           ;åˆ¤æ–·æ˜¯å¦æœ‰èˆŠçš„æ•µäººä¸¦å‘å‰ç§»å‹•
-    INVOKE springMove                          ;åˆ¤æ–·æ˜¯å¦æœ‰èˆŠçš„å½ˆç°§ä¸¦å‘å‰ç§»å‹•
-    INVOKE accelerateMove                      ;åˆ¤æ–·æ˜¯å¦æœ‰èˆŠçš„åŠ é€Ÿæ¿ä¸¦å‘å‰ç§»å‹•
-    INVOKE coinMove                            ;åˆ¤æ–·æ˜¯å¦æœ‰èˆŠçš„é‡‘å¹£ä¸¦å‘å‰ç§»å‹•
-    INVOKE gameOver                            ;åˆ¤æ–·æ˜¯å¦æ’ä¸Šæ•µäºº
-    INVOKE springDetect                        ;åˆ¤æ–·æ˜¯å¦æ’ä¸Šå½ˆç°§
-    INVOKE accelerateDetect                    ;åˆ¤æ–·æ˜¯å¦æ’ä¸ŠåŠ é€Ÿæ¿
-    INVOKE coinDetect                          ;åˆ¤æ–·æ˜¯å¦æ’ä¸Šé‡‘å¹£
-    INVOKE enemyCreate                         ;åˆ¤æ–·æ•µäººç”Ÿæˆ
-    INVOKE springCreate                        ;åˆ¤æ–·å½ˆç°§ç”Ÿæˆ
-    INVOKE accelerateCreate                    ;åˆ¤æ–·åŠ é€Ÿæ¿ç”Ÿæˆ
-    INVOKE coinCreate                          ;åˆ¤æ–·é‡‘å¹£ç”Ÿæˆ
-    INVOKE consoleChange                       ;ç•«å‡ºç•«é¢
+    INVOKE enemyMove                           ;§PÂ_¬O§_¦³ÂÂªº¼Ä¤H¨Ã¦V«e²¾°Ê
+    INVOKE springMove                          ;§PÂ_¬O§_¦³ÂÂªº¼uÂ®¨Ã¦V«e²¾°Ê
+    INVOKE accelerateMove                      ;§PÂ_¬O§_¦³ÂÂªº¥[³tªO¨Ã¦V«e²¾°Ê
+    INVOKE coinMove                            ;§PÂ_¬O§_¦³ÂÂªºª÷¹ô¨Ã¦V«e²¾°Ê
+    INVOKE gameOver                            ;§PÂ_¬O§_¼²¤W¼Ä¤H
+    INVOKE springDetect                        ;§PÂ_¬O§_¼²¤W¼uÂ®
+    INVOKE accelerateDetect                    ;§PÂ_¬O§_¼²¤W¥[³tªO
+    INVOKE coinDetect                          ;§PÂ_¬O§_¼²¤Wª÷¹ô
+    INVOKE enemyCreate                         ;§PÂ_¼Ä¤H¥Í¦¨
+    INVOKE springCreate                        ;§PÂ_¼uÂ®¥Í¦¨
+    INVOKE accelerateCreate                    ;§PÂ_¥[³tªO¥Í¦¨
+    INVOKE coinCreate                          ;§PÂ_ª÷¹ô¥Í¦¨
+    INVOKE consoleChange                       ;µe¥Xµe­±
     mov eax,score
     shr eax,16
     add eax,10
@@ -169,14 +184,14 @@ RESET:
       sub ebx,eax
     .ENDIF
   DelayEDIT:
-    mov eax,ebx                           ;å»¶é²
+    mov eax,ebx                           ;©µ¿ğ
     call Delay
     inc ebx
     .IF gameovercheck==1
       jmp L2
     .ENDIF
     inc score
-    INVOKE SetConsoleCursorPosition,            ;è®“æ¸¸æ¨™ä½ç½®å›ºå®šï¼Œé¡¯ç¤ºåˆ†æ•¸
+    INVOKE SetConsoleCursorPosition,            ;Åı´å¼Ğ¦ì¸m©T©w¡AÅã¥Ü¤À¼Æ
         outputHandle,
         scorePosition
     mov eax,score
@@ -190,7 +205,7 @@ RESET:
     exit
 main ENDP
 
-initialization PROC USES eax ebx ecx esi        ;åˆå§‹åŒ–
+initialization PROC USES eax ebx ecx esi        ;ªì©l¤Æ
     call Randomize
     mov enemyProbability,10000
     mov delayTime,50
@@ -217,24 +232,24 @@ initialization PROC USES eax ebx ecx esi        ;åˆå§‹åŒ–
     ret
     initialization ENDP
 
-consoleChange PROC                          ;ç•«å‡ºéŠæˆ²ç•«é¢
+consoleChange PROC                          ;µe¥X¹CÀ¸µe­±
   
     mov ecx,10          
-    push xyPosition                         ;ç´€éŒ„èµ·é»
-  DRAWLINE:                                 ;è¡Œæ•¸
+    push xyPosition                         ;¬ö¿ı°_ÂI
+  DRAWLINE:                                 ;¦æ¼Æ
     push ecx
-    push xyPosition.X                       ;ç´€éŒ„xä½ç½®
+    push xyPosition.X                       ;¬ö¿ıx¦ì¸m
     mov ecx,CMDWIDTH
-  DRAWROW:                                  ;åˆ—æ•¸
+  DRAWROW:                                  ;¦C¼Æ
     push ecx
     mov block,' '
-    INVOKE characterCheck                   ;åˆ¤æ–·è§’è‰²ä½ç½®
-    INVOKE groundCheck                      ;åˆ¤æ–·åœ°æ¿ä½ç½®
-    INVOKE enemyDraw                        ;åˆ¤æ–·ç•«å‡ºæ•µäºº
-    INVOKE springDraw                       ;åˆ¤æ–·ç•«å‡ºå½ˆç°§
-    INVOKE accelerateDraw                   ;åˆ¤æ–·ç•«å‡ºåŠ é€Ÿæ¿
-    INVOKE coinDraw                         ;åˆ¤æ–·ç•«å‡ºé‡‘å¹£
-    INVOKE WriteConsoleOutputCharacter,     ;è¼¸å‡ºä¸€æ ¼
+    INVOKE characterCheck                   ;§PÂ_¨¤¦â¦ì¸m
+    INVOKE groundCheck                      ;§PÂ_¦aªO¦ì¸m
+    INVOKE enemyDraw                        ;§PÂ_µe¥X¼Ä¤H
+    INVOKE springDraw                       ;§PÂ_µe¥X¼uÂ®
+    INVOKE accelerateDraw                   ;§PÂ_µe¥X¥[³tªO
+    INVOKE coinDraw                         ;§PÂ_µe¥Xª÷¹ô
+    INVOKE WriteConsoleOutputCharacter,     ;¿é¥X¤@®æ
        outputHandle,   
        ADDR block,   
        1,   
@@ -242,21 +257,21 @@ consoleChange PROC                          ;ç•«å‡ºéŠæˆ²ç•«é¢
        ADDR count    
     pop ecx
     inc xyPosition.X                        
-    LOOP DRAWROW                            ;å¢åŠ xåº§æ¨™
+    LOOP DRAWROW                            ;¼W¥[x®y¼Ğ
     pop xyPosition.X
     pop ecx
-    inc xyPosition.Y                        ;åº§æ¨™æ›åˆ°ä¸‹ä¸€è¡Œä½ç½®
+    inc xyPosition.Y                        ;®y¼Ğ´«¨ì¤U¤@¦æ¦ì¸m
     LOOP DRAWLINE
     pop xyPosition
-    INVOKE SetConsoleCursorPosition,            ;è®“æ¸¸æ¨™ä½ç½®å›ºå®šï¼Œé¡¯ç¤ºåˆ†æ•¸å­—ä¸²
+    INVOKE SetConsoleCursorPosition,            ;Åı´å¼Ğ¦ì¸m©T©w¡AÅã¥Ü¤À¼Æ¦r¦ê
         outputHandle,
-        scoreStringPosition
-    mov edx,OFFSET scoreString
+        scoreTitleStringPosition
+    mov edx,OFFSET scoreTitleString
     call WriteString
     ret
     consoleChange ENDP
 
-characterCheck PROC USES eax ebx ecx        ;åˆ¤æ–·è§’è‰²ä½ç½®
+characterCheck PROC USES eax ebx ecx        ;§PÂ_¨¤¦â¦ì¸m
   
     mov ax,characterPosition.X                      
     shl eax,16
@@ -264,43 +279,43 @@ characterCheck PROC USES eax ebx ecx        ;åˆ¤æ–·è§’è‰²ä½ç½®
     mov bx,xyPosition.X
     shl ebx,16
     mov bx,xyPosition.Y
-    .IF eax==ebx                             ;åˆ©ç”¨eax ebxå­˜å–åº§æ¨™ä¸¦æ¯”è¼ƒ,è‹¥ç›¸åŒå‰‡ç•«ä¸Š0
+    .IF eax==ebx                             ;§Q¥Îeax ebx¦s¨ú®y¼Ğ¨Ã¤ñ¸û,­Y¬Û¦P«hµe¤W0
       mov block,'H'
     .ENDIF
     ret
     characterCheck ENDP
 
-groundCheck PROC USES eax ebx ecx           ;åˆ¤æ–·åœ°æ¿ä½ç½®
+groundCheck PROC USES eax ebx ecx           ;§PÂ_¦aªO¦ì¸m
   
     mov ax,ground
     mov bx,xyPosition.Y
-    .IF ax==bx                               ;åˆ©ç”¨ax bxå­˜å–åº§æ¨™ä¸¦æ¯”è¼ƒ,è‹¥ç›¸åŒå‰‡ç•«ä¸Š-   
+    .IF ax==bx                               ;§Q¥Îax bx¦s¨ú®y¼Ğ¨Ã¤ñ¸û,­Y¬Û¦P«hµe¤W-   
       mov block,'-'
     .ENDIF
     ret
     groundCheck ENDP
 
-enemyCreate PROC USES eax ebx ecx esi               ;åˆ¤æ–·æ•µäººæ˜¯å¦ç”Ÿæˆ
-    mov ebx,enemyProbability                    ;å¢åŠ æ©Ÿç‡
+enemyCreate PROC USES eax ebx ecx esi               ;§PÂ_¼Ä¤H¬O§_¥Í¦¨
+    mov ebx,enemyProbability                    ;¼W¥[¾÷²v
     inc ebx
     mov enemyProbability,ebx
-    mov eax,enemyProbability                    ;æ©Ÿç‡ç”Ÿæˆæ•µäºº
+    mov eax,enemyProbability                    ;¾÷²v¥Í¦¨¼Ä¤H
     .IF eax>enemy
-      mov esi,119                             ;ç”¨é™£åˆ—å­˜ä½ç½®
+      mov esi,119                             ;¥Î°}¦C¦s¦ì¸m
       mov [enemyRow+esi],1
     .ENDIF
     .IF eax>enemy
-      mov esi,119                             ;ç”¨é™£åˆ—å­˜é«˜åº¦
+      mov esi,119                             ;¥Î°}¦C¦s°ª«×
       mov eax,height
       mov [enemyHeight+esi],ax
     .ENDIF
     ret
     enemyCreate ENDP
 
-enemyDraw PROC USES eax ebx ecx esi         ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºæ•µäºº
-    movzx esi,xyPosition.X                  ;å¦‚æœç•¶å‰Xåº§æ¨™å°æ‡‰åˆ°æ•µäººé™£åˆ—ä¸­ä¸æ˜¯1å°±ä¸ç•«
+enemyDraw PROC USES eax ebx ecx esi         ;§PÂ_¬O§_µe¥X¼Ä¤H
+    movzx esi,xyPosition.X                  ;¦pªG·í«eX®y¼Ğ¹ïÀ³¨ì¼Ä¤H°}¦C¤¤¤£¬O1´N¤£µe
     .IF [enemyRow+esi]==1
-      mov ax,ground                               ;å¦‚æœç•¶å‰Yåº§æ¨™ä¸æ˜¯åœ°æ¿ä¸Šå°±ä¸ç•«
+      mov ax,ground                               ;¦pªG·í«eY®y¼Ğ¤£¬O¦aªO¤W´N¤£µe
       sub ax,[enemyHeight+esi]
       mov bx,xyPosition.Y
       .IF ax<=bx && bx<=onGround
@@ -310,26 +325,26 @@ enemyDraw PROC USES eax ebx ecx esi         ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºæ•µäºº
     ret
     enemyDraw ENDP
 
-enemyMove PROC USES eax ecx esi             ;æ¯ä¸€æ¬¡é‡ç•«å°±åˆ¤æ–·æ•µäººç§»å‹•
+enemyMove PROC USES eax ecx esi             ;¨C¤@¦¸­«µe´N§PÂ_¼Ä¤H²¾°Ê
     mov esi,0
     mov ecx,119
-  ENEMYLEFT:                                ;æ•µäººé™£åˆ—å…¨éƒ¨å¾€å‰è¤‡è£½
+  ENEMYLEFT:                                ;¼Ä¤H°}¦C¥ş³¡©¹«e½Æ»s
     mov al,[enemyRow+esi+1]
     mov [enemyRow+esi],al
     mov ax,[enemyHeight+esi+1]
     mov [enemyHeight+esi],ax
     inc esi
     LOOP ENEMYLEFT
-    mov esi,119                             ;æ•µäººé™£åˆ—æœ€å¾Œä¸€å€‹è£œ0
+    mov esi,119                             ;¼Ä¤H°}¦C³Ì«á¤@­Ó¸É0
     mov [enemyRow+esi],0
     mov [enemyHeight+esi],0
     ret
     enemyMove ENDP
 
-gameOver PROC USES eax ebx ecx esi             ;åˆ¤æ–·éŠæˆ²çµæŸ
-    movzx esi,characterPosition.X              ;å¦‚æœç•¶å‰Xåº§æ¨™å°æ‡‰åˆ°æ•µäººé™£åˆ—ä¸­ä¸æ˜¯1å°±æ²’äº‹
+gameOver PROC USES eax ebx ecx esi             ;§PÂ_¹CÀ¸µ²§ô
+    movzx esi,characterPosition.X              ;¦pªG·í«eX®y¼Ğ¹ïÀ³¨ì¼Ä¤H°}¦C¤¤¤£¬O1´N¨S¨Æ
     .IF [enemyRow+esi]==1
-      mov ax,ground                               ;å¦‚æœç•¶å‰Yåº§æ¨™ä¸æ˜¯åœ°æ¿ä¸Šå°±æ²’äº‹
+      mov ax,ground                               ;¦pªG·í«eY®y¼Ğ¤£¬O¦aªO¤W´N¨S¨Æ
       sub ax,[enemyHeight+esi]
       mov bx,characterPosition.Y
       .IF ax<=bx && bx<=onGround
@@ -339,19 +354,19 @@ gameOver PROC USES eax ebx ecx esi             ;åˆ¤æ–·éŠæˆ²çµæŸ
     ret
     gameOver ENDP
 
-springCreate PROC USES eax ebx ecx esi               ;åˆ¤æ–·å½ˆç°§æ˜¯å¦ç”Ÿæˆ
+springCreate PROC USES eax ebx ecx esi               ;§PÂ_¼uÂ®¬O§_¥Í¦¨
     mov eax,springProbability                   
     mov esi,119
-    .IF eax>spring && [enemyRow+esi]==0             ;æ©Ÿç‡ç”Ÿæˆå½ˆç°§
+    .IF eax>spring && [enemyRow+esi]==0             ;¾÷²v¥Í¦¨¼uÂ®
       mov [springRow+esi],1
     .ENDIF
     ret
     springCreate ENDP
 
-springDraw PROC USES eax ebx ecx esi         ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºå½ˆç°§
-    movzx esi,xyPosition.X                  ;å¦‚æœç•¶å‰Xåº§æ¨™å°æ‡‰åˆ°å½ˆç°§é™£åˆ—ä¸­ä¸æ˜¯1å°±ä¸ç•«
+springDraw PROC USES eax ebx ecx esi         ;§PÂ_¬O§_µe¥X¼uÂ®
+    movzx esi,xyPosition.X                  ;¦pªG·í«eX®y¼Ğ¹ïÀ³¨ì¼uÂ®°}¦C¤¤¤£¬O1´N¤£µe
     .IF [springRow+esi]==1
-      mov ax,onGround                               ;å¦‚æœç•¶å‰Yåº§æ¨™ä¸æ˜¯åœ°æ¿ä¸Šå°±ä¸ç•«
+      mov ax,onGround                               ;¦pªG·í«eY®y¼Ğ¤£¬O¦aªO¤W´N¤£µe
       mov bx,xyPosition.Y
       .IF ax==bx
         mov block,'Z'
@@ -360,28 +375,28 @@ springDraw PROC USES eax ebx ecx esi         ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºå½ˆç°§
     ret
     springDraw ENDP
 
-springMove PROC USES eax ecx esi             ;æ¯ä¸€æ¬¡é‡ç•«å°±åˆ¤æ–·å½ˆç°§ç§»å‹•
+springMove PROC USES eax ecx esi             ;¨C¤@¦¸­«µe´N§PÂ_¼uÂ®²¾°Ê
     mov esi,0
     mov ecx,119
-  SPRINGLEFT:                                ;å½ˆç°§é™£åˆ—å…¨éƒ¨å¾€å‰è¤‡è£½
+  SPRINGLEFT:                                ;¼uÂ®°}¦C¥ş³¡©¹«e½Æ»s
     mov al,[springRow+esi+1]
     mov [springRow+esi],al
     inc esi
     LOOP SPRINGLEFT
-    mov esi,119                             ;å½ˆç°§é™£åˆ—æœ€å¾Œä¸€å€‹è£œ0
+    mov esi,119                             ;¼uÂ®°}¦C³Ì«á¤@­Ó¸É0
     mov [springRow+esi],0
     ret
     springMove ENDP
 
-springDetect PROC USES eax ebx ecx esi             ;åˆ¤æ–·å½ˆç°§
-    movzx esi,characterPosition.X              ;å¦‚æœç•¶å‰Xåº§æ¨™å°æ‡‰åˆ°å½ˆç°§é™£åˆ—ä¸­ä¸æ˜¯1å°±æ²’äº‹
+springDetect PROC USES eax ebx ecx esi             ;§PÂ_¼uÂ®
+    movzx esi,characterPosition.X              ;¦pªG·í«eX®y¼Ğ¹ïÀ³¨ì¼uÂ®°}¦C¤¤¤£¬O1´N¨S¨Æ
     .IF [springRow+esi]==1
       mov ax,onGround                              
       mov bx,characterPosition.Y
       .IF ax==bx
       mov ecx,7
   SPRINGOVER:
-        mov eax,5                           ;å»¶é²
+        mov eax,5                           ;©µ¿ğ
         call Delay
         dec characterPosition.y
         LOOP SPRINGOVER
@@ -390,24 +405,24 @@ springDetect PROC USES eax ebx ecx esi             ;åˆ¤æ–·å½ˆç°§
     ret
     springDetect ENDP
 
-accelerateCreate PROC USES eax ebx ecx esi               ;åˆ¤æ–·åŠ é€Ÿæ¿æ˜¯å¦ç”Ÿæˆ
+accelerateCreate PROC USES eax ebx ecx esi               ;§PÂ_¥[³tªO¬O§_¥Í¦¨
     mov eax,accelerateProbability                   
     mov esi,119
-    .IF eax>accelerate && [enemyRow+esi]==0 && [springRow+esi]==0           ;æ©Ÿç‡ç”ŸæˆåŠ é€Ÿæ¿
+    .IF eax>accelerate && [enemyRow+esi]==0 && [springRow+esi]==0           ;¾÷²v¥Í¦¨¥[³tªO
       mov [accelerateRow+esi],1
     .ENDIF
     .IF eax>accelerate && [enemyRow+esi]==0 && [springRow+esi]==0
-      mov esi,119                             ;ç”¨é™£åˆ—å­˜é«˜åº¦
+      mov esi,119                             ;¥Î°}¦C¦s°ª«×
       mov eax,aheight
       mov [accelerateHeight+esi],ax
     .ENDIF
     ret
     accelerateCreate ENDP
 
-accelerateDraw PROC USES eax ebx ecx esi         ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºåŠ é€Ÿæ¿
-    movzx esi,xyPosition.X                  ;å¦‚æœç•¶å‰Xåº§æ¨™å°æ‡‰åˆ°åŠ é€Ÿæ¿é™£åˆ—ä¸­ä¸æ˜¯1å°±ä¸ç•«
+accelerateDraw PROC USES eax ebx ecx esi         ;§PÂ_¬O§_µe¥X¥[³tªO
+    movzx esi,xyPosition.X                  ;¦pªG·í«eX®y¼Ğ¹ïÀ³¨ì¥[³tªO°}¦C¤¤¤£¬O1´N¤£µe
     .IF [accelerateRow+esi]==1
-      mov ax,ground                               ;å¦‚æœç•¶å‰Yåº§æ¨™ä¸æ˜¯åœ°æ¿-é«˜åº¦å°±ä¸ç•«
+      mov ax,ground                               ;¦pªG·í«eY®y¼Ğ¤£¬O¦aªO-°ª«×´N¤£µe
       sub ax,[accelerateHeight+esi]
       mov bx,xyPosition.Y
       .IF ax==bx
@@ -417,67 +432,67 @@ accelerateDraw PROC USES eax ebx ecx esi         ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºåŠ é€Ÿæ¿
     ret
     accelerateDraw ENDP
 
-accelerateMove PROC USES eax ecx esi             ;æ¯ä¸€æ¬¡æ¸…é™¤ç‰ˆé¢é‡ç•«å°±åˆ¤æ–·åŠ é€Ÿæ¿ç§»å‹•
+accelerateMove PROC USES eax ecx esi             ;¨C¤@¦¸²M°£ª©­±­«µe´N§PÂ_¥[³tªO²¾°Ê
     mov esi,0
     mov ecx,119
-  ACCELERATELEFT:                                ;åŠ é€Ÿæ¿é™£åˆ—å…¨éƒ¨å¾€å‰è¤‡è£½
+  ACCELERATELEFT:                                ;¥[³tªO°}¦C¥ş³¡©¹«e½Æ»s
     mov al,[accelerateRow+esi+1]
     mov [accelerateRow+esi],al
     mov ax,[accelerateHeight+esi+1]
     mov [accelerateHeight+esi],ax
     inc esi
     LOOP ACCELERATELEFT
-    mov esi,119                             ;åŠ é€Ÿæ¿é™£åˆ—æœ€å¾Œä¸€å€‹è£œ0
+    mov esi,119                             ;¥[³tªO°}¦C³Ì«á¤@­Ó¸É0
     mov [accelerateRow+esi],0
     mov [accelerateHeight+esi],0
     ret
     accelerateMove ENDP
 
-accelerateDetect PROC USES eax ebx ecx esi             ;åˆ¤æ–·åŠ é€Ÿæ¿
-    movzx esi,characterPosition.X              ;å¦‚æœç•¶å‰Xåº§æ¨™å°æ‡‰åˆ°åŠ é€Ÿæ¿é™£åˆ—ä¸­ä¸æ˜¯1å°±æ²’äº‹
+accelerateDetect PROC USES eax ebx ecx esi             ;§PÂ_¥[³tªO
+    movzx esi,characterPosition.X              ;¦pªG·í«eX®y¼Ğ¹ïÀ³¨ì¥[³tªO°}¦C¤¤¤£¬O1´N¨S¨Æ
     .IF [accelerateRow+esi]==1
-      mov ax,ground                               ;å¦‚æœç•¶å‰Yåº§æ¨™ä¸æ˜¯åœ°æ¿-é«˜åº¦å°±æ²’äº‹
+      mov ax,ground                               ;¦pªG·í«eY®y¼Ğ¤£¬O¦aªO-°ª«×´N¨S¨Æ
       sub ax,[accelerateHeight+esi]
       mov bx,characterPosition.Y
       .IF ax==bx
       mov kingKrim,10
   ACCERLERATEOVER:
-      mov eax,1000000                            ;ç”¢ç”Ÿæ•µäººè®Šæ•¸
+      mov eax,1000000                            ;²£¥Í¼Ä¤HÅÜ¼Æ
       call RandomRange
       mov enemy,eax
-      mov eax,3                                 ;ç”¢ç”Ÿæ•µäººé«˜åº¦è®Šæ•¸
+      mov eax,3                                 ;²£¥Í¼Ä¤H°ª«×ÅÜ¼Æ
       call RandomRange
       inc eax
       mov height,eax
-      mov eax,1000000                            ;ç”¢ç”Ÿå½ˆç°§è®Šæ•¸
+      mov eax,1000000                            ;²£¥Í¼uÂ®ÅÜ¼Æ
       call RandomRange
       mov spring,eax
-      mov eax,1000000                            ;ç”¢ç”Ÿå½ˆç°§è®Šæ•¸
+      mov eax,1000000                            ;²£¥Í¼uÂ®ÅÜ¼Æ
       call RandomRange
       mov accelerate,eax
-      mov eax,3                                 ;ç”¢ç”ŸåŠ é€Ÿæ¿é«˜åº¦è®Šæ•¸
+      mov eax,3                                 ;²£¥Í¥[³tªO°ª«×ÅÜ¼Æ
       call RandomRange
       inc eax
       mov aheight,eax
-      mov eax,1000000                            ;ç”¢ç”Ÿç¡¬å¹£è®Šæ•¸
+      mov eax,1000000                            ;²£¥Íµw¹ôÅÜ¼Æ
       call RandomRange
       mov coin,eax
-      mov eax,3                                 ;ç”¢ç”Ÿç¡¬å¹£é«˜åº¦è®Šæ•¸
+      mov eax,3                                 ;²£¥Íµw¹ô°ª«×ÅÜ¼Æ
       call RandomRange
       inc eax
       mov cheight,eax
-      INVOKE enemyMove                           ;åˆ¤æ–·æ˜¯å¦æœ‰èˆŠçš„æ•µäººä¸¦å‘å‰ç§»å‹•
-      INVOKE springMove                          ;åˆ¤æ–·æ˜¯å¦æœ‰èˆŠçš„å½ˆç°§ä¸¦å‘å‰ç§»å‹•
-      INVOKE accelerateMove                      ;åˆ¤æ–·æ˜¯å¦æœ‰èˆŠçš„åŠ é€Ÿæ¿ä¸¦å‘å‰ç§»å‹•
-      INVOKE coinMove                            ;åˆ¤æ–·æ˜¯å¦æœ‰èˆŠçš„é‡‘å¹£ä¸¦å‘å‰ç§»å‹•
-      INVOKE coinDetect                          ;åˆ¤æ–·æ˜¯å¦æ’ä¸Šé‡‘å¹£
-      INVOKE enemyCreate                         ;åˆ¤æ–·æ•µäººç”Ÿæˆ
-      INVOKE springCreate                        ;åˆ¤æ–·å½ˆç°§ç”Ÿæˆ
-      INVOKE accelerateCreate                    ;åˆ¤æ–·åŠ é€Ÿæ¿ç”Ÿæˆ
-      INVOKE coinCreate                          ;åˆ¤æ–·é‡‘å¹£ç”Ÿæˆ
-      INVOKE consoleChange                       ;ç•«å‡ºç•«é¢
+      INVOKE enemyMove                           ;§PÂ_¬O§_¦³ÂÂªº¼Ä¤H¨Ã¦V«e²¾°Ê
+      INVOKE springMove                          ;§PÂ_¬O§_¦³ÂÂªº¼uÂ®¨Ã¦V«e²¾°Ê
+      INVOKE accelerateMove                      ;§PÂ_¬O§_¦³ÂÂªº¥[³tªO¨Ã¦V«e²¾°Ê
+      INVOKE coinMove                            ;§PÂ_¬O§_¦³ÂÂªºª÷¹ô¨Ã¦V«e²¾°Ê
+      INVOKE coinDetect                          ;§PÂ_¬O§_¼²¤Wª÷¹ô
+      INVOKE enemyCreate                         ;§PÂ_¼Ä¤H¥Í¦¨
+      INVOKE springCreate                        ;§PÂ_¼uÂ®¥Í¦¨
+      INVOKE accelerateCreate                    ;§PÂ_¥[³tªO¥Í¦¨
+      INVOKE coinCreate                          ;§PÂ_ª÷¹ô¥Í¦¨
+      INVOKE consoleChange                       ;µe¥Xµe­±
       inc score
-      mov eax,1                           ;å»¶é²
+      mov eax,1                           ;©µ¿ğ
       call Delay
       dec kingKrim
       cmp kingKrim,0
@@ -487,24 +502,24 @@ accelerateDetect PROC USES eax ebx ecx esi             ;åˆ¤æ–·åŠ é€Ÿæ¿
     ret
     accelerateDetect ENDP
 
-coinCreate PROC USES eax ebx ecx esi               ;åˆ¤æ–·é‡‘å¹£æ˜¯å¦ç”Ÿæˆ
+coinCreate PROC USES eax ebx ecx esi               ;§PÂ_ª÷¹ô¬O§_¥Í¦¨
     mov eax,coinProbability                   
     mov esi,119
-    .IF eax>coin && [enemyRow+esi]==0 && [springRow+esi]==0 && [accelerateRow+esi]==0        ;æ©Ÿç‡ç”Ÿæˆé‡‘å¹£
+    .IF eax>coin && [enemyRow+esi]==0 && [springRow+esi]==0 && [accelerateRow+esi]==0        ;¾÷²v¥Í¦¨ª÷¹ô
       mov [coinRow+esi],1
     .ENDIF
     .IF eax>coin && [enemyRow+esi]==0 && [springRow+esi]==0 && [accelerateRow+esi]==0
-      mov esi,119                             ;ç”¨é™£åˆ—å­˜é«˜åº¦
+      mov esi,119                             ;¥Î°}¦C¦s°ª«×
       mov eax,cheight
       mov [coinHeight+esi],ax
     .ENDIF
     ret
     coinCreate ENDP
 
-coinDraw PROC USES eax ebx ecx esi         ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºé‡‘å¹£
-    movzx esi,xyPosition.X                  ;å¦‚æœç•¶å‰Xåº§æ¨™å°æ‡‰åˆ°é‡‘å¹£é™£åˆ—ä¸­ä¸æ˜¯1å°±ä¸ç•«
+coinDraw PROC USES eax ebx ecx esi         ;§PÂ_¬O§_µe¥Xª÷¹ô
+    movzx esi,xyPosition.X                  ;¦pªG·í«eX®y¼Ğ¹ïÀ³¨ìª÷¹ô°}¦C¤¤¤£¬O1´N¤£µe
     .IF [coinRow+esi]==1
-      mov ax,ground                               ;å¦‚æœç•¶å‰Yåº§æ¨™ä¸æ˜¯åœ°æ¿-é«˜åº¦å°±ä¸ç•«
+      mov ax,ground                               ;¦pªG·í«eY®y¼Ğ¤£¬O¦aªO-°ª«×´N¤£µe
       sub ax,[coinHeight+esi]
       mov bx,xyPosition.Y
       .IF ax==bx
@@ -514,26 +529,26 @@ coinDraw PROC USES eax ebx ecx esi         ;åˆ¤æ–·æ˜¯å¦ç•«å‡ºé‡‘å¹£
     ret
     coinDraw ENDP
 
-coinMove PROC USES eax ecx esi             ;æ¯ä¸€æ¬¡æ¸…é™¤ç‰ˆé¢é‡ç•«å°±åˆ¤æ–·é‡‘å¹£ç§»å‹•
+coinMove PROC USES eax ecx esi             ;¨C¤@¦¸²M°£ª©­±­«µe´N§PÂ_ª÷¹ô²¾°Ê
     mov esi,0
     mov ecx,119
-  COINLEFT:                                ;é‡‘å¹£é™£åˆ—å…¨éƒ¨å¾€å‰è¤‡è£½
+  COINLEFT:                                ;ª÷¹ô°}¦C¥ş³¡©¹«e½Æ»s
     mov al,[coinRow+esi+1]
     mov [coinRow+esi],al
     mov ax,[coinHeight+esi+1]
     mov [coinHeight+esi],ax
     inc esi
     LOOP COINLEFT
-    mov esi,119                             ;é‡‘å¹£é™£åˆ—æœ€å¾Œä¸€å€‹è£œ0
+    mov esi,119                             ;ª÷¹ô°}¦C³Ì«á¤@­Ó¸É0
     mov [coinRow+esi],0
     mov [coinHeight+esi],0
     ret
     coinMove ENDP
 
-coinDetect PROC USES eax ebx ecx esi             ;åˆ¤æ–·é‡‘å¹£
-    movzx esi,characterPosition.X              ;å¦‚æœç•¶å‰Xåº§æ¨™å°æ‡‰åˆ°é‡‘å¹£é™£åˆ—ä¸­ä¸æ˜¯1å°±æ²’äº‹
+coinDetect PROC USES eax ebx ecx esi             ;§PÂ_ª÷¹ô
+    movzx esi,characterPosition.X              ;¦pªG·í«eX®y¼Ğ¹ïÀ³¨ìª÷¹ô°}¦C¤¤¤£¬O1´N¨S¨Æ
     .IF [coinRow+esi]==1
-      mov ax,ground                               ;å¦‚æœç•¶å‰Yåº§æ¨™ä¸æ˜¯åœ°æ¿-é«˜åº¦å°±æ²’äº‹
+      mov ax,ground                               ;¦pªG·í«eY®y¼Ğ¤£¬O¦aªO-°ª«×´N¨S¨Æ
       sub ax,[coinHeight+esi]
       mov bx,characterPosition.Y
       .IF ax==bx
@@ -544,24 +559,31 @@ coinDetect PROC USES eax ebx ecx esi             ;åˆ¤æ–·é‡‘å¹£
     ret
     coinDetect ENDP
 
-beginScreen PROC USES eax ecx edx              ;é–‹å§‹ç•«é¢
+beginScreen PROC USES eax ecx edx              ;¶}©lµe­±
     LOCAL fileHandle:HANDLE,buffer[5000]:BYTE
-    mov	edx,OFFSET beginFile                   ;é–‹å•Ÿæª”æ¡ˆ
+    mov	edx,OFFSET beginFile                   ;¶}±ÒÀÉ®×
 	  call OpenInputFile
-	  mov	fileHandle,eax                         ;è®€æª”æ¡ˆåˆ°bufferè£¡
+	  mov	fileHandle,eax                         ;ÅªÀÉ®×¨ìbuffer¸Ì
     lea	edx,[buffer]
 	  mov	ecx,3627
 	  call ReadFromFile
+    INVOKE CloseHandle,fileHandle
     mov [buffer+3627],0
-    call Clrscr                                ;æ¸…ç©ºè¢å¹•
-    lea	edx,[buffer]                           ;å°å‡ºbuffer
+    call Clrscr
+    lea	edx,[buffer]                           ;¦L¥Xbuffer
 	  call WriteString
     call ReadChar
     call Clrscr
+    .IF al=='r'
+      call rankScreen
+    .ENDIF
+    .IF al=='R'
+      call rankScreen
+    .ENDIF
     ret
     beginScreen ENDP
 
-pauseScreen PROC USES eax ecx edx              ;æš«åœç•«é¢
+pauseScreen PROC USES eax ecx edx              ;¼È°±µe­±
     LOCAL fileHandle:HANDLE,buffer[5000]:BYTE 
     mov	edx,OFFSET pauseFile
 	  call OpenInputFile
@@ -569,6 +591,7 @@ pauseScreen PROC USES eax ecx edx              ;æš«åœç•«é¢
     lea	edx,[buffer]
 	  mov	ecx,3627
 	  call ReadFromFile
+    INVOKE CloseHandle,fileHandle
     mov [buffer+3627],0
     call Clrscr
     lea	edx,[buffer]
@@ -579,14 +602,25 @@ pauseScreen PROC USES eax ecx edx              ;æš«åœç•«é¢
     ret
     pauseScreen ENDP
 
-endingScreen PROC USES eax ecx edx              ;çµæŸç•«é¢
+endingScreen PROC USES eax ecx edx              ;µ²§ôµe­±
     LOCAL fileHandle:HANDLE,buffer[5000]:BYTE
+    call Clrscr
+    INVOKE SetConsoleCursorPosition,            ;Åı´å¼Ğ¦ì¸m©T©w¡AÅã¥Ü¤À¼Æ
+      outputHandle,
+      middlePosition
+    mov edx,OFFSET scoreTitleString
+    call WriteString
+    mov eax,score
+    call WriteDec
+    INVOKE Sleep,2000
+    INVOKE rank
     mov	edx,OFFSET endingFile
 	  call OpenInputFile
 	  mov	fileHandle,eax
     lea	edx,[buffer]
 	  mov	ecx,3627
 	  call ReadFromFile
+    INVOKE CloseHandle,fileHandle
     mov [buffer+3627],0
     call Clrscr
     lea	edx,[buffer]
@@ -596,10 +630,273 @@ endingScreen PROC USES eax ecx edx              ;çµæŸç•«é¢
     .IF ax==3920h
       mov restart,1
     .ENDIF
+    .IF al=='R'
+      mov restart,1
+      mov fromEndScreen,1
+      call rankScreen
+    .ENDIF
+    .IF al=='r'
+      mov restart,1
+      mov fromEndScreen,1
+      call rankScreen
+    .ENDIF
     .IF ax!=3920h
-      mov restart,0
+      .IF al!='R'
+        .IF al!='r'
+          exit
+        .ENDIF
+      .ENDIF
     .ENDIF
     ret
     endingScreen ENDP
+
+
+rankScreen PROC USES eax ebx ecx edx esi
+    LOCAL rankScorePosition:COORD,nameString[11]:BYTE,scoreString[11]:BYTE,fileScoreHandle:HANDLE,fileNameHandle:HANDLE,scoreBuffer[60]:BYTE,nameBuffer[60]:BYTE
+    call Clrscr
+    INVOKE CreateFile,OFFSET rankScoreFile,GENERIC_READ,DO_NOT_SHARE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0
+	  mov	fileScoreHandle,eax
+    INVOKE ReadFile,fileScoreHandle,ADDR scoreBuffer,50,0,0
+    INVOKE CloseHandle,fileScoreHandle
+
+    INVOKE CreateFile,OFFSET rankNameFile,GENERIC_READ,DO_NOT_SHARE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0
+    mov fileNameHandle,eax
+    INVOKE ReadFile,fileNameHandle,ADDR nameBuffer,50,0,0
+    INVOKE CloseHandle,fileNameHandle
+    mov rankScorePosition.X,45
+    mov rankScorePosition.Y,11
+    INVOKE SetConsoleCursorPosition,outputHandle,rankScorePosition
+    mov ecx,5
+    mov esi,0
+    mov ebx,0
+    READRANK:
+      push ecx
+      mov rankScorePosition.X,45
+      inc rankScorePosition.Y
+      INVOKE SetConsoleCursorPosition,outputHandle,rankScorePosition
+      mov ecx,0
+      READRANKNAME:
+      mov eax,0
+      mov al,[nameBuffer+esi]
+      .IF al!='|'
+        mov [nameString+ecx],al
+        inc esi
+        inc ecx
+        jmp READRANKNAME
+      .ENDIF
+      inc esi
+      mov [nameString+ecx],0
+      lea edx,[nameString]
+      call WriteString
+      mov rankScorePosition.X,60
+      INVOKE SetConsoleCursorPosition,outputHandle,rankScorePosition
+      mov ecx,10
+      READRANKSCORE:
+        mov al,[scoreBuffer+ebx]
+        mov edx,10
+        sub edx,ecx
+        mov [scoreString+edx],al
+        inc ebx
+        LOOP READRANKSCORE
+      mov edx,10
+      sub edx,ecx
+      mov [scoreString+edx],0
+      lea edx,[scoreString]
+      call WriteString
+      pop ecx
+      .IF ecx>1
+        dec ecx
+        jmp READRANK
+      .ENDIF
+    mov rankScorePosition.X,45
+    inc rankScorePosition.Y
+    INVOKE SetConsoleCursorPosition,outputHandle,rankScorePosition
+    INVOKE WriteConsole,outputHandle,ADDR backToStart,18,0,0
+    inc rankScorePosition.Y
+    INVOKE SetConsoleCursorPosition,outputHandle,rankScorePosition
+    INVOKE WriteConsole,outputHandle,ADDR endTheGame,16,0,0
+    mov eax,0
+    IFBACK:
+    call ReadChar
+    .IF ax==3920h
+      call beginScreen
+      jmp RANKSCREENEND
+    .ENDIF
+    .IF ax!=3920h
+      exit
+    .ENDIF
+    RANKSCREENEND:
+    ret
+    rankScreen ENDP
+
+rank PROC USES eax ebx ecx edx esi
+    LOCAL UserInsert:DWORD,NewScoreIn:BYTE,UserName[11]:BYTE,scoreString[11]:BYTE,fileScoreHandle:HANDLE,fileNameHandle:HANDLE,scoreBuffer[60]:BYTE,newScoreBuffer[60]:BYTE,nameBuffer[60]:BYTE,newNameBuffer[60]:BYTE
+
+    mov ecx,10
+    mov esi,0
+  CLEARNAME:
+    mov [UserName+esi],0
+    inc esi
+    LOOP CLEARNAME
+  READNAME:
+    call Clrscr
+    mov edx,OFFSET rankAsking
+    call WriteString
+    lea edx,[UserName]
+    mov [UserName+10],0
+    mov ecx,11
+    call ReadString
+    .IF [UserName+10]!=0
+    mov edx,OFFSET NameTooLong
+    call WriteString
+    INVOKE Sleep,2000
+    jmp READNAME
+    .ENDIF
+    mov ecx,10
+    mov esi,0
+  CHECKNAME:
+    mov al,[UserName+esi]
+    .IF al=='|'
+    mov edx,OFFSET WrongName
+    call WriteString
+    INVOKE Sleep,2000
+    jmp READNAME
+    .ENDIF
+    inc esi
+    LOOP CHECKNAME
+
+    INVOKE CreateFile,OFFSET rankScoreFile,GENERIC_READ,DO_NOT_SHARE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0
+	  mov	fileScoreHandle,eax
+    INVOKE ReadFile,fileScoreHandle,ADDR scoreBuffer,50,0,0
+    INVOKE CloseHandle,fileScoreHandle
+
+    INVOKE CreateFile,OFFSET rankNameFile,GENERIC_READ,DO_NOT_SHARE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0
+    mov fileNameHandle,eax
+    INVOKE ReadFile,fileNameHandle,ADDR nameBuffer,50,0,0
+    INVOKE CloseHandle,fileNameHandle
+
+    mov UserInsert,-1
+    mov eax,score
+    mov ecx,10
+  SCORETOSTRING:
+    mov edx,0
+    mov ebx,10
+    div ebx
+    add dl,'0'
+    mov [scoreString+ecx-1],dl
+    LOOP SCORETOSTRING
+    mov [scoreString+10],0
+
+    mov NewScoreIn,0
+    mov ecx,5
+    mov esi,0
+    mov ebx,0
+  CHECKRANKSCORE:
+    push ecx
+    mov ecx,10
+    .IF NewScoreIn==1
+      jmp MOVINOLDSCORE
+    .ENDIF
+    mov eax,0
+    READONESCORE:
+      mov edx,10
+      mul edx
+      mov edx,0
+      push ebx
+      add ebx,10
+      sub ebx,ecx
+      mov dl,[scoreBuffer+ebx]
+      pop ebx
+      sub dl,'0'
+      add eax,edx
+      LOOP READONESCORE
+    
+    .IF eax<=score
+      pop ecx
+      mov edx,5
+      sub edx,ecx
+      mov UserInsert,edx
+      push ecx
+      mov ecx,10
+      MOVINNEWSCORE:
+        mov edx,0
+        push ebx
+        mov ebx,10
+        sub ebx,ecx
+        mov dl,[scoreString+ebx]
+        pop ebx
+        mov [newScoreBuffer+esi],dl
+        inc esi
+        LOOP MOVINNEWSCORE
+      mov NewScoreIn,1
+      jmp SCORENEXT
+    .ENDIF
+    mov ecx,10
+    MOVINOLDSCORE:
+      mov edx,0
+      push ebx
+      add ebx,10
+      sub ebx,ecx
+      mov dl,[scoreBuffer+ebx]
+      pop ebx
+      mov [newScoreBuffer+esi],dl
+      inc esi
+      LOOP MOVINOLDSCORE
+    SCORENEXT:
+    add ebx,10
+    pop ecx
+    .IF ecx>1
+      dec ecx
+      jmp CHECKRANKSCORE
+    .ENDIF
+
+    INVOKE Str_length,ADDR UserName
+    mov [UserName+eax],'|'
+    mov ecx,5
+    mov esi,0
+    mov ebx,0
+  CHECKRANKNAME:
+    mov eax,ecx
+    add eax,UserInsert
+    .IF eax==5
+      push ecx
+      mov ecx,0
+      WRITENEWNAME:
+      mov eax,0
+      mov al,[UserName+ecx]
+      .IF al!='|'
+        mov [newNameBuffer+esi],al
+        inc esi
+        inc ecx
+        jmp WRITENEWNAME
+      .ENDIF
+      pop ecx
+      jmp NAMENEXT
+    .ENDIF
+    WRITEOLDNAME:
+    mov eax,0
+    mov al,[nameBuffer+ebx]
+    inc ebx
+    .IF al!='|'
+      mov [newNameBuffer+esi],al
+      inc esi
+      jmp WRITEOLDNAME
+    .ENDIF
+    NAMENEXT:
+    mov [newNameBuffer+esi],'|'
+    inc esi
+    LOOP CHECKRANKNAME
+
+    INVOKE CreateFile,OFFSET rankScoreFile,GENERIC_WRITE,DO_NOT_SHARE,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,0
+    mov	fileScoreHandle,eax
+    INVOKE WriteFile,fileScoreHandle,ADDR newScoreBuffer,50,0,0
+    INVOKE CloseHandle,fileScoreHandle
+
+    INVOKE CreateFile,OFFSET rankNameFile,GENERIC_WRITE,DO_NOT_SHARE,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,0
+    mov	fileNameHandle,eax
+    INVOKE WriteFile,fileNameHandle,ADDR newNameBuffer,esi,0,0
+    INVOKE CloseHandle,fileNameHandle
+    ret
+    rank ENDP
 
 END main
