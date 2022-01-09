@@ -17,10 +17,9 @@
 -                                    ------          --       ----------   --       --                                -
 -                                                                                                                     -
 -                                                                                                                     -
--                                            PRESS SPACE TO RESTART THE GAME                                          -
--                                            PRESS OTHER KEY TO END THE GAME                                          -
--                                                                                                                     -
--                                                                                                                     -
+-                                                  ��U�ť���^��MENU                                                 -
+-                                                  ��UR�d�ݱƦ�]                                                    -
+-                                                  ���L�䵲��C�                                                   -
 -                                                                                                                     -
 -                                                                                                                     -
 -                                                                                                                     -
