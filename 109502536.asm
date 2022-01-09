@@ -35,7 +35,7 @@ CMDHEIGHT = 30
 .data
 block BYTE ?
 restart BYTE ?
-enemyProbability DWORD 10000000
+enemyProbability DWORD 10000
 springProbability DWORD 10000
 accelerateProbability DWORD 20000
 coinProbability DWORD 50000
