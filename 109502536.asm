@@ -25,7 +25,7 @@ endingScreen PROTO                          ;結束頁面
 beginScreen PROTO                           ;開始頁面
 pauseScreen PROTO                           ;暫停頁面
 initialization PROTO                        ;初始化
-rankScreen PROTO
+rankScreen PROTO                            ;排名畫面
 rank PROTO                                  ;判斷排名
 
 main	EQU start@0
@@ -70,7 +70,7 @@ scorePosition COORD <113,0>
 smallRect SMALL_RECT <0,0,120,30> 
 consoleScreen COORD <120,30>
 jumping BYTE 0
-gameovercheck BYTE 0
+gameoverCheck BYTE 0
 score DWORD 0
 scoreTitleString BYTE "your score:" , 0
 beginFile BYTE "START.txt",0
@@ -126,7 +126,7 @@ RESET:
           inc jumping
           dec characterPosition.Y
         .ENDIF
-        .IF jumping>5                       
+        .IF jumping>7                     
           mov jumping,0                     ;跳躍過程結束歸零
         .ENDIF
       .ENDIF
@@ -185,8 +185,7 @@ RESET:
   DelayEDIT:
     mov eax,ebx                           ;延遲
     call Delay
-    inc ebx
-    .IF gameovercheck==1
+    .IF gameoverCheck==1
       jmp L2
     .ENDIF
     inc score
@@ -225,7 +224,7 @@ initialization PROC USES eax ebx ecx esi        ;初始化
     mov characterPosition.x,10
     mov characterPosition.y,20
     mov jumping,0
-    mov gameovercheck,0
+    mov gameoverCheck,0
     mov score,0
     mov kingKrim,0
     ret
@@ -347,7 +346,7 @@ gameOver PROC USES eax ebx ecx esi             ;判斷遊戲結束
       sub ax,[enemyHeight+esi]
       mov bx,characterPosition.Y
       .IF ax<=bx && bx<=onGround
-        mov gameovercheck,1
+        mov gameoverCheck,1
       .ENDIF
     .ENDIF
     ret
