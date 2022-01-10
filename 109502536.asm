@@ -67,7 +67,6 @@ xyPosition COORD <0,12>
 characterPosition COORD <10,20> 
 scoreTitleStringPosition COORD <102,0>
 scorePosition COORD <113,0>
-middlePosition  COORD <50,15>
 smallRect SMALL_RECT <0,0,120,30> 
 consoleScreen COORD <120,30>
 jumping BYTE 0
@@ -560,18 +559,14 @@ coinDetect PROC USES eax ebx ecx esi             ;判斷金幣
     coinDetect ENDP
 
 beginScreen PROC USES eax ecx edx              ;開始畫面
-    LOCAL fileHandle:HANDLE,buffer[5000]:BYTE
-    mov	edx,OFFSET beginFile                   ;開啟檔案
-	  call OpenInputFile
-	  mov	fileHandle,eax                         ;讀檔案到buffer裡
-    lea	edx,[buffer]
-	  mov	ecx,3627
-	  call ReadFromFile
+    LOCAL fileHandle:HANDLE,buffer[4000]:BYTE
+    INVOKE CreateFile,OFFSET beginFile,GENERIC_READ,DO_NOT_SHARE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0
+	  mov	fileHandle,eax
+    INVOKE ReadFile,fileHandle,ADDR buffer,3628,0,0
     INVOKE CloseHandle,fileHandle
-    mov [buffer+3627],0
     call Clrscr
-    lea	edx,[buffer]                           ;印出buffer
-	  call WriteString
+    INVOKE WriteConsole,outputHandle,ADDR buffer,3628,0,0
+    ; call WaitMsg
     call ReadChar
     call Clrscr
     .IF al=='r'
@@ -584,18 +579,13 @@ beginScreen PROC USES eax ecx edx              ;開始畫面
     beginScreen ENDP
 
 pauseScreen PROC USES eax ecx edx              ;暫停畫面
-    LOCAL fileHandle:HANDLE,buffer[5000]:BYTE 
-    mov	edx,OFFSET pauseFile
-	  call OpenInputFile
+    LOCAL fileHandle:HANDLE,buffer[4000]:BYTE
+    INVOKE CreateFile,OFFSET pauseFile,GENERIC_READ,DO_NOT_SHARE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0
 	  mov	fileHandle,eax
-    lea	edx,[buffer]
-	  mov	ecx,3627
-	  call ReadFromFile
+    INVOKE ReadFile,fileHandle,ADDR buffer,3628,0,0
     INVOKE CloseHandle,fileHandle
-    mov [buffer+3627],0
     call Clrscr
-    lea	edx,[buffer]
-	  call WriteString
+    INVOKE WriteConsole,outputHandle,ADDR buffer,3628,0,0
     call ReadChar
     call Clrscr
     INVOKE consoleChange
@@ -603,7 +593,9 @@ pauseScreen PROC USES eax ecx edx              ;暫停畫面
     pauseScreen ENDP
 
 endingScreen PROC USES eax ecx edx              ;結束畫面
-    LOCAL fileHandle:HANDLE,buffer[5000]:BYTE
+    LOCAL middlePosition:COORD,fileHandle:HANDLE,buffer[4000]:BYTE
+    mov middlePosition.X,50
+    mov middlePosition.Y,15
     call Clrscr
     INVOKE SetConsoleCursorPosition,            ;讓游標位置固定，顯示分數
       outputHandle,
@@ -614,17 +606,12 @@ endingScreen PROC USES eax ecx edx              ;結束畫面
     call WriteDec
     INVOKE Sleep,2000
     INVOKE rank
-    mov	edx,OFFSET endingFile
-	  call OpenInputFile
+    INVOKE CreateFile,OFFSET endingFile,GENERIC_READ,DO_NOT_SHARE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0
 	  mov	fileHandle,eax
-    lea	edx,[buffer]
-	  mov	ecx,3627
-	  call ReadFromFile
+    INVOKE ReadFile,fileHandle,ADDR buffer,3628,0,0
     INVOKE CloseHandle,fileHandle
-    mov [buffer+3627],0
     call Clrscr
-    lea	edx,[buffer]
-	  call WriteString
+    INVOKE WriteConsole,outputHandle,ADDR buffer,3628,0,0
     call ReadChar
     call Clrscr
     .IF ax==3920h
@@ -652,7 +639,8 @@ endingScreen PROC USES eax ecx edx              ;結束畫面
 
 
 rankScreen PROC USES eax ebx ecx edx esi
-    LOCAL rankScorePosition:COORD,nameString[11]:BYTE,scoreString[11]:BYTE,fileScoreHandle:HANDLE,fileNameHandle:HANDLE,scoreBuffer[60]:BYTE,nameBuffer[60]:BYTE
+    LOCAL rankScorePosition:COORD,nameString[11]:BYTE,scoreString[11]:BYTE,
+      fileScoreHandle:HANDLE,fileNameHandle:HANDLE,scoreBuffer[60]:BYTE,nameBuffer[60]:BYTE
     call Clrscr
     INVOKE CreateFile,OFFSET rankScoreFile,GENERIC_READ,DO_NOT_SHARE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,0
 	  mov	fileScoreHandle,eax
@@ -730,8 +718,10 @@ rankScreen PROC USES eax ebx ecx edx esi
     rankScreen ENDP
 
 rank PROC USES eax ebx ecx edx esi
-    LOCAL UserInsert:DWORD,NewScoreIn:BYTE,UserName[11]:BYTE,scoreString[11]:BYTE,fileScoreHandle:HANDLE,fileNameHandle:HANDLE,scoreBuffer[60]:BYTE,newScoreBuffer[60]:BYTE,nameBuffer[60]:BYTE,newNameBuffer[60]:BYTE
-
+    LOCAL nameAskPosition:COORD,UserInsert:DWORD,NewScoreIn:BYTE,UserName[11]:BYTE,scoreString[11]:BYTE,fileScoreHandle:HANDLE,
+      fileNameHandle:HANDLE,scoreBuffer[60]:BYTE,newScoreBuffer[60]:BYTE,nameBuffer[60]:BYTE,newNameBuffer[60]:BYTE
+    mov nameAskPosition.X,22
+    mov nameAskPosition.Y,15
     mov ecx,10
     mov esi,0
   CLEARNAME:
@@ -740,13 +730,16 @@ rank PROC USES eax ebx ecx edx esi
     LOOP CLEARNAME
   READNAME:
     call Clrscr
+    INVOKE SetConsoleCursorPosition,outputHandle,nameAskPosition
     mov edx,OFFSET rankAsking
     call WriteString
     lea edx,[UserName]
     mov [UserName+10],0
-    mov ecx,11
+    mov ecx,12
     call ReadString
     .IF [UserName+10]!=0
+    call Clrscr
+    INVOKE SetConsoleCursorPosition,outputHandle,nameAskPosition
     mov edx,OFFSET NameTooLong
     call WriteString
     INVOKE Sleep,2000
@@ -757,6 +750,8 @@ rank PROC USES eax ebx ecx edx esi
   CHECKNAME:
     mov al,[UserName+esi]
     .IF al=='|'
+    call Clrscr
+    INVOKE SetConsoleCursorPosition,outputHandle,nameAskPosition
     mov edx,OFFSET WrongName
     call WriteString
     INVOKE Sleep,2000
