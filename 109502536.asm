@@ -70,7 +70,7 @@ scorePosition COORD <113,0>
 smallRect SMALL_RECT <0,0,120,30> 
 consoleScreen COORD <120,30>
 jumping BYTE 0
-gameovercheck BYTE 0
+gameoverCheck BYTE 0
 score DWORD 0
 scoreTitleString BYTE "your score:" , 0
 beginFile BYTE "START.txt",0
@@ -120,7 +120,7 @@ main PROC
                         inc jumping
                         dec characterPosition.Y
                     .ENDIF
-                    .IF jumping>5
+                    .IF jumping>7
                         mov jumping,0                                 ;跳躍過程結束歸零
                     .ENDIF
                 .ENDIF
@@ -179,7 +179,6 @@ main PROC
             DelayEDIT:
                 mov eax,ebx                                           ;延遲
                 call Delay
-            inc ebx
             .IF gameovercheck==1
                 jmp L2
             .ENDIF
@@ -217,7 +216,7 @@ initialization PROC USES eax ebx ecx esi                              ;初始化
     mov characterPosition.x,10
     mov characterPosition.y,20
     mov jumping,0
-    mov gameovercheck,0
+    mov gameoverCheck,0
     mov score,0
     mov kingKrim,0
     ret
