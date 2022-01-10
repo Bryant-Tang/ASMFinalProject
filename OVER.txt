@@ -17,9 +17,9 @@
 -                                    ------          --       ----------   --       --                                -
 -                                                                                                                     -
 -                                                                                                                     -
--                                            PRESS SPACE TO RESTART THE GAME                                          -
--                                            PRESS OTHER KEY TO END THE GAME                                          -
--                                                                                                                     -
+-                                              PRESS SPACE TO BACK TO MENU                                            -
+-                                              PRESS R TO VIEW THE RANK                                               -
+-                                              PRESS OTHER KEY TO END THE GAME                                        -
 -                                                                                                                     -
 -                                                                                                                     -
 -                                                                                                                     -
