@@ -35,7 +35,7 @@ CMDHEIGHT = 30
 .data
 block BYTE ?
 restart BYTE ?
-enemyProbability DWORD 10000000
+enemyProbability DWORD 10000
 springProbability DWORD 10000
 accelerateProbability DWORD 20000
 coinProbability DWORD 50000
@@ -810,7 +810,6 @@ rank PROC USES eax ebx ecx edx esi
       sub dl,'0'
       add eax,edx
       LOOP READONESCORE
-    
     .IF eax<=score
       pop ecx
       mov edx,5
@@ -842,8 +841,8 @@ rank PROC USES eax ebx ecx edx esi
       mov [newScoreBuffer+esi],dl
       inc esi
       LOOP MOVINOLDSCORE
-    SCORENEXT:
     add ebx,10
+    SCORENEXT:
     pop ecx
     .IF ecx>1
       dec ecx
